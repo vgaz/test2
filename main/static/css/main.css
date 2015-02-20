@@ -1,0 +1,256 @@
+body
+{
+	background-color:#005050;
+	color: white;
+	padding:20px;
+}
+
+#home
+{
+    display:inline-block;
+    width:80%;
+    float:left;
+}
+
+.suite_div
+{
+    background-color:white;
+    color:black;
+    width:100%
+}
+
+.suite_header
+{
+	margin-top:0px;
+	border:5px solid;
+	padding-left:5px;
+}
+
+.table1
+{
+	background-color:white;
+	border: 2px solid blue;
+	color:black;
+	width:100%;
+	
+}
+
+.table2
+{
+	background-color:white;
+	color:black;
+	width:100%;
+	height:100%;	
+	
+}
+.str_err
+{
+    color:red;
+    font-weight:bold;
+}
+
+.tr1
+{
+	border: 2px solid blue;
+	padding:5px;	
+}
+
+
+.td1
+{
+	background:#d6d6d6;
+	border: 2px solid gray;
+	padding:5px;
+	
+}
+.td2
+{
+    background-color: white; 
+	padding:5px;
+	vertical-align:middle;
+	text-align:center;
+	border:1px solid #6495ED;
+	font-weight: bold;
+}
+.td_url
+{
+    width:70%;
+    border: 2px solid gray;
+    padding:5px;
+    
+}
+
+.sequence_div
+{
+	width:100%
+	color:black;	
+}
+
+.sequence_details
+{
+	margin:1px; 
+}
+
+h1
+{
+	font-size:20pt;
+	font-weight:bold;
+	margin-top:5px; 
+	margin-bottom:10px;
+}
+
+h2
+{
+	color:#005050;
+	font-style:italic;
+	margin:5px;
+}
+
+h3
+{
+margin:10px;
+}
+
+#Bannerblock
+{
+	clear:both;
+	background:#3c91fa;
+	font-style:italic;
+	text-align:right;
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+#banner
+{
+	height:auto;
+	margin-top:5px;
+	margin-bottom:1%;
+	color:white;
+	font-style:italic;
+}
+
+.detail_comp_testName
+{
+	margin-top:0px;
+
+}
+
+
+#connexion
+{
+	float:left;
+	font-size:10pt;
+	font-weight:bold;
+	margin-top:25px;
+	margin-left:25px;
+	background:#D6D6D6;
+	border-radius:5px;
+	border:5px solid #7F5FFF;
+	padding:5px;
+}
+
+
+.InputList, .FormInputs
+{
+	color:white;
+	background:#08252E;
+	vertical-align:top;
+	padding:5px;
+	border:2px solid #08252E;	
+}
+
+
+#filterInputs
+{
+	color:white;
+	background:#08252E;
+	vertical-align:top;
+	padding:5px;
+}
+
+
+.BlueFrame
+{
+    width:20%;
+    background: #FFFFFF;
+    color:#3F3F3F;
+    border-radius:10px;
+    margin:10px 10px 10px 10px;
+    padding:10px;
+    border:5px solid #00D6D6;
+}
+
+.GreenFrame
+{
+    width:100px;
+    height:100px;
+    background: #FFFFFF;
+    color:#3F3F3F;
+    border-radius:10px;
+    margin:10px 10px 10px 10px;
+    padding:10px;
+    border:5px solid #22FF22;
+}
+
+#adminTools
+{
+	background: #FFFFFF;
+	color:gray;
+	border-radius:10px;
+	margin:10px 10px 10px 0px;
+	padding:10px;
+	float:right;
+	border:5px solid #FFCC00;
+}
+
+#linksToProfs
+{
+	color:gray;
+	font-weight:bold;
+	background: #D6D6D6;
+	padding:10px;
+	margin-top:30px;
+	border-radius:10px;
+	border:5px solid #7F5F66;
+	clear:both;
+
+}
+
+
+#login
+{
+	background:#D6D6D6;
+	color:#0F0F0F;
+	border: 2px;
+	width:440px;
+	height:130px;
+	padding:30px;
+	margin-left: 36%;
+	padding-left:20px;
+	border-radius:5px;
+	border: solid 5px #7F5FFF;
+	margin-top:10%;
+}
+
+.tdFailure
+{
+    border:3px solid #FF0000;
+}
+
+.tdSuccess
+{
+    border:3px solid #00FF00;
+}
+.tdSuccess, .tdFailure
+{
+    text-align:center;
+    padding:4px;
+}
+
+.whiteFrame {
+    background-color: white;
+    color:black;
+    padding:10px;
+    margin:10px;
+}

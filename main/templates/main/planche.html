@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block javascript %}
+
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+
+<style>
+#sortable { list-style-type: none; margin:0; padding:0; width: 100px;height:100px; border:5px solid #00D6D6; }
+#sortable p { margin: 3px 3px 3px 3px; padding: 1px; float: left; width: 100px; height: 100px; font-size: 2em; text-align: center; }
+</style>
+
+
+<script>
+$(function() {
+$( "#sortable" ).sortable();
+$( "#sortable" ).disableSelection();
+});
+
+function init()
+{
+alert('init')
+
+
+}
+
+function ajoutPlan()
+{
+alert('ajout')
+
+}
+
+function sauveMatrice()
+{
+alert('sauve')
+
+}
+
+function changeLig(hSel) 
+{
+document.getElementById("sortable").style.height = (120 * hSel.value ).toString() + "px"
+}
+
+function changeCol(hSel) 
+{
+  hMatrice = document.getElementById("sortable")
+  hMatrice.style.width = (120 * hSel.value ).toString() + "px"
+}
+
+</script>
+
+{% endblock %}
+
+{% block title %}Definition de la matrice {% endblock %}
+
+{% block content %}
+
+<input type="button" onclick="ajoutPlan()" value="Ajout d'un item">
+&nbsp;
+Nb lign 
+<select name="nbLig" onchange="changeLig(this)">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+</select>
+&nbsp;
+&nbsp;
+Nb col
+<select name="nbCol" onchange="changeCol(this)">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+</select>
+
+&nbsp;
+<input type="button" onclick="sauveMatrice()" value="Sauvegarde de la matrice">
+<br/><br/>
+
+
+<div id="sortable">
+<p class="GreenFrame" id="item1"><span>item1</span></p>
+<p class="GreenFrame"><span>item2</span></p>
+<p class="GreenFrame"><span>item3</span></p>
+</div>
+
+
+
+
+
+
+{% endblock %}
