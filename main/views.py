@@ -27,10 +27,28 @@ def home(request):
 
 def planche(request):
 
+    num_planche = int(request.GET.get('num_planche', "1"))
+    l_vars = Variete.objects.all().values_list("nom", flat=True)
+    s_selectVars = ""
+    xhtmlEditPlan = "".join(( "<p>Sur la planche %s. Plan N° $$PLAN_ID$$</p>"%num_planche,
+                             "Variété : <input type='text' value=' ? ' name='Variete'/>",
+                             "<br />Date de début d'activité",
+                             "<br/>Evenements<br/><input type='button' value='Ajouter un évènement' name='ajout'/><br/>",
+                             "<input type='button' value='Sauver le plan' name='sauver'/><br/>"
+                             ))
+    nb_col = 3
+    nb_lig = 4
+    nb_plans = nb_col * nb_lig
     return render(request,
                  'main/planche.html',
                  {
-                  "appVersion":Constant.APP_VERSION
+                  "appVersion":Constant.APP_VERSION,
+                  "num_planche": num_planche,
+                  "l_lig":range(1, nb_lig + 1),
+                  "l_col":range(1, nb_col + 1),
+                  "l_plans": range(1, nb_plans +1),
+                  "xhtmlEditPlan":xhtmlEditPlan,
+                  "l_vars":l_vars,
                   })
 
 #################################################
@@ -54,14 +72,15 @@ def quiz(request):
 
     if form.is_valid():
         
-        pkVarAsked = request.POST.get('variety', -2)
+        idVarAsked = request.POST.get('variete')
         
-        varAsked = Variete.objects.get(pk=pkVarAsked)
-         
-        print "var ", varAsked.pk, varAsked.nom, varAsked.famille, varAsked.famille.pk
+        varAsked = Variete.objects.get(id=idVarAsked)
+     
+        print "var ", varAsked.id, varAsked.nom, varAsked.famille 
         
         repIdFam = int(request.POST.get('famChoice', -1))
-        print 'rep', repIdFam, type(repIdFam), ' / ', type(varAsked.famille.pk)
+        
+        print 'rep', repIdFam
          
         if repIdFam == varAsked.famille.pk:
             message = "BRAVO"
@@ -74,7 +93,7 @@ def quiz(request):
         form = forms.FormFamilyQuiz()
 
   
-    form.var = random(Variete.objects.all().values("nom", "pk"))
+    form.var = random(Variete.objects.filter(famille_id__in=[14,16,17,21]).values("nom", "id"))
 
     return render(request, 'main/quiz.html',
             {

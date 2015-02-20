@@ -5,7 +5,9 @@
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 
 <style>
-#sortable { list-style-type: none; margin:0; padding:0; width: 100px;height:100px; border:5px solid #00D6D6; }
+#divEditPlan { width:40%;height:40%; float:left}
+#divEditEvenement { width:40%;height:40%; float:left}
+#sortable { list-style-type: none; margin:0; padding:0; width: 100px;height:100px; border:5px solid #00D6D6; float:left}
 #sortable p { margin: 3px 3px 3px 3px; padding: 1px; float: left; width: 100px; height: 100px; font-size: 2em; text-align: center; }
 </style>
 
@@ -16,11 +18,14 @@ $( "#sortable" ).sortable();
 $( "#sortable" ).disableSelection();
 });
 
+num_planche = {{num_planche}}
+
 function init()
 {
-alert('init')
-
-
+    document.getElementById("select_lig").value = {{l_lig|length}}
+    document.getElementById("select_col").value = {{l_col|length}}
+    changeLig() 
+    changeCol() 
 }
 
 function ajoutPlan()
@@ -29,65 +34,69 @@ alert('ajout')
 
 }
 
+function editPlan(num_plan)
+{
+
+document.getElementById("divEditPlan").innerHTML = "{{xhtmlEditPlan|safe}}".replace("$$PLAN_ID$$", num_plan)
+}
 function sauveMatrice()
 {
 alert('sauve')
 
 }
 
-function changeLig(hSel) 
+function changeLig() 
 {
-document.getElementById("sortable").style.height = (120 * hSel.value ).toString() + "px"
+  val = document.getElementById("select_lig").value
+  document.getElementById("sortable").style.height = (120 * val ).toString() + "px"
 }
 
-function changeCol(hSel) 
+function changeCol() 
 {
-  hMatrice = document.getElementById("sortable")
-  hMatrice.style.width = (120 * hSel.value ).toString() + "px"
+  val = document.getElementById("select_col").value
+  document.getElementById("sortable").style.width = (120 * val ).toString() + "px"
 }
 
 </script>
 
 {% endblock %}
 
-{% block title %}Definition de la matrice {% endblock %}
+{% block title %}Definition de la matrice de planche {{num_planche}} {% endblock %}
 
 {% block content %}
-
+<div style="width: 90%">
 <input type="button" onclick="ajoutPlan()" value="Ajout d'un plan">
 &nbsp;
-Nb lign 
-<select name="nbLig" onchange="changeLig(this)">
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="6">6</option>
+Nb lignes : 
+<select id="select_lig" name="nbLig" onchange="changeLig()">
+    {% for ligne in l_lig %}
+    <option value="{{ligne}}">{{ligne}}</option>
+    {% endfor %}
 </select>
 &nbsp;
 &nbsp;
-Nb col
-<select name="nbCol" onchange="changeCol(this)">
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
+Nb colonnes : 
+<select id="select_col" name="nbCol" onchange="changeCol()">
+    {% for col in l_col %}
+    <option value="{{col}}">{{col}}</option>
+    {% endfor %}
 </select>
 
 &nbsp;
-<input type="button" onclick="sauveMatrice()" value="Sauvegarde de la matrice">
+<input type="button" onclick="sauveMatrice()" value="Sauvegarde de la matrice de planche">
 <br/><br/>
 
 
 <div id="sortable">
-<p class="GreenFrame" id="item1"><span>item1</span></p>
-<p class="GreenFrame"><span>item2</span></p>
-<p class="GreenFrame"><span>item3</span></p>
+    {% for plan in l_plans %}
+    <p class="GreenFrame" id="plan_{{plan}}" onclick="editPlan({{plan}})"><span>plan {{plan}}</span></p>
+    {% endfor %}
 </div>
 
+<div class="BlueFrame" id="divEditPlan"></div>
+<div class="YellowFrame" id="divEditEvenement">ddd</div>
 
 
 
-
-
+</div>
 {% endblock %}
