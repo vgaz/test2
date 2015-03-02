@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+   
+<style>
+.Plan 
+{
+    width:250px;
+    height:70px;
+    border-top: 15px solid green;
+    position:absolute;
+    background: rgba(255, 0, 0, 0.2);
+    font-size: 2em;
+    overflow: hidden;
+    resize: both;
+    min-width: 120px;
+    min-height: 90px;
+    max-width: 400px;
+    max-height: 300px;    
+    }
+</style>
+
+<script language="JavaScript">
+
+function init()
+    {
+    plan_id = ''
+    bMoving = false
+    }
+    
+function getCoordinates(event) 
+    {
+    screenX = event.screenX
+    screenY = event.screenY
+    clientX = event.clientX
+    clientY = event.clientY
+    
+    //if (event.pageX) 
+      //  {
+      //  pageX = event.pageX;
+     //   pageY = event.pageY;
+    //    }
+    //else 
+        //{
+     //   pageX = event.clientX + document.body.scrollLeft
+     //   pageY = event.clientY + document.body.scrollTop
+     //   }
+
+    coordinates = "clientX = " + clientX + "; clientY = " + clientY 
+   
+    if (plan_id != "")
+        {
+        rect = document.getElementById(plan_id).getBoundingClientRect()
+        coordinates += ";diff = " + (clientY - rect.top)
+        coordinates += "\nplan_id= " + plan_id + " style.top " + rect.top
+        }
+    coordinates += "\nbMoving= " + bMoving
+    
+    document.getElementById("TextArea1").value = coordinates;
+
+    }
+
+function toggleMove()
+    {
+    if (plan_id == "")
+        return
+        
+    obj=document.getElementById(plan_id)
+    rect = obj.getBoundingClientRect()
+    if(bMoving == false)
+        {
+        if ((clientY - rect.top < 40)&&(clientX - rect.left <40 ))  // pour prendre au coin
+            {
+            bMoving = true
+            obj.style.borderColor='yellow'
+            }
+        }
+    else
+        {
+        bMoving = false
+        obj.style.borderColor = 'green'
+        }
+    // alert(' planid ' + plan_id + ' '+  bMoving)
+    }
+    
+function deplace()
+    {
+    if (plan_id == "")
+        return
+    
+    obj=document.getElementById(plan_id)
+    
+    if (bMoving)
+        {
+        obj.style.marginLeft = clientX - 10 + "px"
+        obj.style.marginTop = clientY - 10 + "px"
+        obj.innerHTML = plan_id + "<br/>;  x=" + obj.style.marginLeft + "; y=" + obj.style.marginTop
+        }
+    }
+    
+function remove(idPlan)
+    {
+    plan_id=''
+    document.getElementById('cadre').removeChild(document.getElementById(idPlan))
+    }
+    
+</script>
+
+</head>
+
+<body onload="init();" onmousemove="getCoordinates(event);deplace();" >
+<div id="cadre" style="width:500px;height:200px;border-bottom-width: 2px">
+<div id="plan_7" onmouseover="plan_id='plan_7'" onmouseout="plan_id=''"  onmousedown="toggleMove();" onmouseup="toggleMove();" class="Plan">test 7 <a href="javascript:remove('plan_7')">remove</a></div>
+<div id="plan_8" onmouseover="plan_id='plan_8'" onmouseout="plan_id=''"  onmousedown="toggleMove();" onmouseup="toggleMove();" class="Plan">test 8 </div>
+<div id="plan_9" onmouseover="plan_id='plan_9'" onmouseout="plan_id=''"  onmousedown="toggleMove();" onmouseup="toggleMove();" class="Plan">test 9 </div>
+<!-- div id="plan_9" onmousedown="plan_id='plan_9';" onmouseup="plan_id='';" class="Plan">test 9 </div>
+<div id="plan_10" onmousedown="plan_id='plan_10';" onmouseup="plan_id='';" class="Plan">test 10 </div -->
+</div>
+
+<textarea id="TextArea1" rows="3" cols="100" style="margin-top: 300px"></textarea>
+
+
+</body>
+</html>
