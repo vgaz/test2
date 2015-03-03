@@ -76,7 +76,7 @@ function getTicket()
 function ajoutPlan()
     {
     s_nouveauPlanId = 'plan_' + getTicket()
-    s_plan = '<p class="Plan" id_plan="' + s_nouveauPlanId + '"'
+    s_plan = '<p class="Plan" id="' + s_nouveauPlanId + '"'
     s_plan += ' onmouseover="plan_courant=' + "'" + s_nouveauPlanId + "'" + '" onmouseout="plan_courant=' + "''" + '"'
     s_plan += '" onmousedown="toggleMove()" onmouseup="toggleMove()" variete="">'
     s_plan += s_nouveauPlanId 
@@ -111,7 +111,7 @@ function sauvePlan()
     
     list = document.getElementsByClassName("Plan")
     for( ii=0;ii<list.length;ii++)
-        if (list[ii].getAttribute("id_plan") == id_plan)
+        if (list[ii].getAttribute("id") == id_plan)
             list[ii].setAttribute("variete", variet)
     
     }
