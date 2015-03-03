@@ -2,13 +2,6 @@
 // All functions used for payy ci web pages
 //
 	
-function changeComp()
-    {
-    e = document.getElementById("component_choice")
-    e.style.backgroundColor="yellow"
-    rep = requestServer('setComponent=' + e.options[e.selectedIndex].text)
-    e.style.backgroundColor="white"
-    }
 
 function checkConnexion()
 	{

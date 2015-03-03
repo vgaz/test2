@@ -4,13 +4,34 @@
     <script type="text/javascript" src="{{ STATIC_URL }}javascripts/myTools.js"></script>
 
 	<style>
-	#divEditPlan { width:40%;height:40%; float:left}
-	#divEditEvenement { width:40%;height:40%; float:left}
-	#matrice { list-style-type: none; margin:0; padding:0; width: 100px;height:100px; border:5px solid #00D6D6; float:left}
-	#matrice p { margin: 3px 3px 3px 3px; padding: 1px; float: left; width: 100px; height: 100px; font-size: 2em; text-align: center; }
+#divEditPlan { width:40%;height:40%; float:left}
+
+#divEditEvenement 
+	{ 
+    width:40%;
+    height:40%; 
+    float:left
+    }
+	
+#matrice { 
+    list-style-type: none; 
+    margin:0; padding:0; width: 100px;height:100px; 
+    border:5px solid #00D6D6; 
+    float:left;
+    border-style-right:dotted;
+    }
+	
+#matrice p 
+    { 
+    margin: 3px 3px 3px 3px; 
+    padding: 1px; float: left; 
+    width: 100px; height: 100px; 
+    font-size: 2em; 
+    text-align: center; 
+    }	
 	
 .Plan 
-{
+    {
     width:250px;
     height:70px;
     border-color:#22FF22;
@@ -29,7 +50,7 @@
     max-width: 400px;
     max-height: 300px;    
     }
-	</style>
+</style>
 
 	<script>
 	
@@ -40,52 +61,69 @@
     
 function init()
 	{
-	document.getElementById("matrice").style.height = ({{planche.largeur_cm}} * pxParCm ).toString() + "px"
-    majHauteurPlans() 
-    changeCol() 
-   
+    document.getElementById("matrice").style.height = ({{planche.largeur_cm}} * pxParCm ).toString() + "px"
+    // la longuer est coupée , on fait un carré
+    document.getElementById("matrice").style.width = ({{planche.largeur_cm}} * pxParCm ).toString() + "px"
 	}
 
-function majHauteurPlans()
-	{
-	hauteur_plan_px = {{planche.largeur_cm}} / getValOfTagName("input", "nbLig") * pxParCm
 
-	l_rep = document.getElementsByClassName("Plan")
-	for (ii=0; ii< l_rep.length; ii++)
-	    l_rep[ii].style.height = hauteur_plan_px + "px"
-	}
+function getTicket()
+{
+    g_tab_tickets.push("0")
+    return(g_tab_tickets.length) 
+}
     
 function ajoutPlan()
     {
     s_nouveauPlanId = 'plan_' + getTicket()
-    s_plan = '<p class="Plan" id="' + s_nouveauPlanId + '" .onmousedown="deplace('+ s_nouveauPlanId + ')" ondragstart = function() { return false }>'
+    s_plan = '<p class="Plan" id_plan="' + s_nouveauPlanId + '"'
+    s_plan += ' onmouseover="plan_courant=' + "'" + s_nouveauPlanId + "'" + '" onmouseout="plan_courant=' + "''" + '"'
+    s_plan += '" onmousedown="toggleMove()" onmouseup="toggleMove()" variete="">'
     s_plan += s_nouveauPlanId 
     s_plan += '<br/><a href="javascript:editePlan(' + "'" + s_nouveauPlanId + "'" + ')">edit</a></span>'
-    s_plan += '<br/><a href="javascript:supprimePlan('+ s_nouveauPlanId + ')">remove</a></span></p>'
+    s_plan += '<br/><a href="javascript:supprimePlan('+ "'" + s_nouveauPlanId + "'" + ')">remove</a></span></p>'
     document.getElementById("matrice").innerHTML += s_plan
-    majHauteurPlans()
     }
-    
+   
 function supprimePlan(id)
     {
     plan_courant = ''   // plus de plan courant qu'on est en train de detruire
     document.getElementById('matrice').removeChild(document.getElementById(id))
+    document.getElementById('divEditPlan').style.display = "none"
     }
 
 function editePlan(id)
-{
+    {
 	document.getElementById("divEditPlan").style.display = "block"
-	document.getElementById("id_planche").innerHTML = {{planche.num}}
-	document.getElementById("pos_plan").innerHTML = id
-}
+	document.getElementById("editPlan_id_planche").innerHTML = {{planche.num}}
+    document.getElementById("editPlan_planId").innerHTML = id
+    //list = document.getElementsByTagName("editPlan_planId")
+   // for( ii=0;ii<list.length;ii++)
+    //    list[ii].value = id;
+//        list[ii].innerHTML = id;
+    }
 
+function sauvePlan()
+    {
+    // recup données et ajout
+    id_plan = document.getElementById("editPlan_planId").innerHTML
+    variet = document.getElementById("editPlan_select_var").value
+    
+    list = document.getElementsByClassName("Plan")
+    for( ii=0;ii<list.length;ii++)
+        if (list[ii].getAttribute("id_plan") == id_plan)
+            list[ii].setAttribute("variete", variet)
+    
+    }
+     
+     
 function ajouteEvenement()
-{
+    {
 	document.getElementById("divEditEvenement").style.display = "block"
-}
+    }
 
 function sauveEvenement()
-{
+    {
 	// recup données et ajout
 	date = document.getElementById("evt_date").value
 	nom = document.getElementById("evt_nom").value
@@ -93,45 +131,41 @@ function sauveEvenement()
 	alert('sauve ' + nom  + " " + date + " du plan " + pos_plan)
 	s_request = "cde=ajoutEvt&nom="+ nom + "&date=" + date
     rep = requestServer(s_request)
-}
+    }
 
 function sauveMatrice()
-{
-	// recup données et ajout
-	date = document.getElementById("evt_date").value
-	nom = document.getElementById("evt_nom").value
-	pos_plan = document.getElementById("pos_plan").value
-	alert('sauve ' + nom  + " " + date + " du plan " + pos_plan)
-	s_request = "cde=jkjkjajoutEvt&nom="+ nom + "&date=" + date
-    rep = requestServer(s_request)
-}
-	 
-
-function changeCol() 
-{
-  nCol = getValOfTagName("input", "nbCol")
-  document.getElementById("matrice").style.width = (120 * nCol ).toString() + "px"
-}
-
-
-function getCoordonnees(event) 
     {
-    screenX = event.screenX
-    screenY = event.screenY
+    // recup données et ajout
+    nom = document.getElementById("evt_nom").value
+    pos_plan = document.getElementById("pos_plan").value
+    alert('sauve ' + nom  + " " + date + " du plan " + pos_plan)
+    s_request = "cde=sauve_matrice&nomddd="+ nom + "&dddate=" + date
+    rep = requestServer(s_request)
+    }
+    
+
+
+
+function majXYMouse(event) 
+    {
+    //screenX = event.screenX
+    //screenY = event.screenY
     clientX = event.clientX
     clientY = event.clientY
 
-    coordinates = "clientX = " + clientX + "; clientY = " + clientY 
+    coordinates =  clientX + ", " + clientY 
    
     if (plan_courant != "")
         {
-        rect = document.getElementById(plan_courant).getBoundingClientRect()
+        obj= document.getElementById(plan_courant)
+        rect = obj.getBoundingClientRect()        
         coordinates += ";diff = " + (clientY - rect.top)
-        coordinates += "\plan_courant= " + plan_courant + " style.top " + rect.top
+        coordinates += "\nplan_courant= " + plan_courant + " style.top " + rect.top + " margins : " + obj.style.marginLeft + "; " + obj.style.marginTop
         }
-    coordinates += "\nbEnMouvement= " + bEnMouvement
+    //matr = document.getElementById("matrice")
+    //coordinates += " || matrice margins" + matr.style.marginLeft + " " + matr.style.marginTop
     
-    document.getElementById("divInfoDebug").innerHtml = coordinates;
+    document.getElementById("divInfoDebug").innerHTML = coordinates
 
     }
 
@@ -155,54 +189,25 @@ function toggleMove()
         bEnMouvement = false
         obj.style.borderColor = 'green'
         }
-    // alert(' planid ' + plan_courant + ' '+  bEnMouvement)
     }
 
 
-function getTicket()
-{
-    g_tab_tickets.push("0")
-    return(g_tab_tickets.length) 
-}
 
-function deplace(plan_courant)
+function deplace()
     {
     if (plan_courant == "")
         return
     
     obj=document.getElementById(plan_courant)
-    
+    matr = document.getElementById("matrice")
+
     if (bEnMouvement)
         {
-        obj.style.marginLeft = clientX - 10 + "px"
-        obj.style.marginTop = clientY - 10 + "px"
-        obj.innerHTML = plan_courant + "<br/>;  x=" + obj.style.marginLeft + "; y=" + obj.style.marginTop
-        }
-        
-////
-
-        this.style.position = 'absolute'
-        var self = this
-        document.onmousemove = function(e) {
-                                            e = e || event
-                                            fixPageXY(e)
-                                            self.style.left = e.pageX-25+'px'
-                                            self.style.top = e.pageY-25+'px'
-                                         }
-       this.onmouseup = function() {
-                                     document.onmousemove = null
-                                   }
-        
-   
-
-////        
-        
-        
-        
-        
+        obj.style.marginLeft = clientX - matr.offsetLeft - 10 + "px"
+        obj.style.marginTop = clientY - matr.offsetTop - 10 + "px"
+        } 
     }
-    
-    
+
 </script>
 
 {% endblock %}
@@ -212,27 +217,22 @@ function deplace(plan_courant)
 {% block content %}
 {% csrf_token %}
 
-<div style="width: 90%">
+<div id="main" onmousemove="majXYMouse(event);deplace();" style="width: 80%">
 <input type="button" onclick="ajoutPlan()" value="Ajout d'un plan">
-&nbsp;Nb lignes : 
-<input type="text" id="nbLig" name="nbLig" onchange="majHauteurPlans()" />
-&nbsp;Nb colonnes : 
-<input type="text" id="nbCol" name="nbCol" onchange="changeCol()" />
 &nbsp;
 <input type="button" onclick="sauveMatrice()" value="Sauvegarde de la matrice de planche">
+
+<span id="divInfoDebug" ></span>
 <br/><br/>
 
-<div id="divInfoDebug" class="BlueFrame"></div><br/>
 
 <div id="matrice"></div>
 
-
 <div class="BlueFrame" style="display: none" id="divEditPlan">
-	
-	<h2>Gestion du plan implanté en <span id="pos_plan"></span></h2>
-	<p>Sur la planche N° <span id="id_planche"></span></p>
+	<h2>Gestion du plan implanté en <span id="editPlan_planId"></span></h2>
+	<p>Sur la planche N° <span id="editPlan_id_planche"></span></p>
     Variété : 
-    <select id="select_var" name="Variete">
+    <select id="editPlan_select_var" name="Variete">
     	    {% for var in l_vars %}
     	    <option value="{{var.id}}">{{var.nom}}</option>
     	    {% endfor %}
@@ -240,8 +240,8 @@ function deplace(plan_courant)
 	
     <br />Date de début d'activité
     <br/>Evenements<br/>
-    <input type='button' value='Ajouter un évènement' name='ajout' onclick="ajouteEvenement({{plan}})"/><br/>
-    <input type='button' value='Sauver le plan' name='sauver'/><br/>                   
+    <input type='button' value='Sauver le plan' name='sauver' onclick="sauvePlan()"/><br/>                   
+    <input type='button' value='Ajouter un évènement' name='ajout' onclick="ajouteEvenement()"/><br/>
 </div>
 
 <div class="YellowFrame" style="display: none" id="divEditEvenement">
