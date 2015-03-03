@@ -16,11 +16,11 @@ class Famille(models.Model):
 class Variete(models.Model):
 
     nom = models.CharField(max_length=100)
-    famille = models.ForeignKey(Famille, null=True, blank=True)
+    famille = models.ForeignKey(Famille, default="", blank=True)
     avec = models.ManyToManyField("self", related_name="avec", null=True, blank=True)
     sans = models.ManyToManyField("self", related_name="sans", null=True, blank=True)
 
-    image = models.ImageField()
+    ## image = models.ImageField()
 #    objects = MyManager()  ## objects est le nom par defaut du manager, ici surcharge eventuelle
     
     class Meta: 
@@ -37,7 +37,6 @@ class Planche(models.Model):
     nom = models.CharField(max_length=100, default="")
     longueur_m = models.IntegerField()
     largeur_cm = models.IntegerField()
-    plans_base = models.ManyToManyField("PlanBaseEnPlace", related_name="planche")    
     
     def __unicode__(self):
         return "Planche %d : %s, %d m x %d cm" % (self.num, self.nom, self.longueur_m, self.largeur_cm)
@@ -65,6 +64,24 @@ class PlanBaseEnPlace(models.Model):
     plan_base  = models.ForeignKey('PlanBase')
     pos_x = models.PositiveIntegerField("Position en x")
     pos_y = models.PositiveIntegerField("Position en y")
-    
+    planche = models.ForeignKey('Planche')
+    date_creation = models.DateField()
+ 
     def __unicode__(self):
-        return "%s / x:%d , y:%d" %(self.plan_base, self.pos_x, self.pos_y)
+        return "%s / position %d %d" %(self.plan_base, self.pos_x, self.pos_y)
+
+class Evenement(models.Model):
+
+    plan_en_place = models.ForeignKey(PlanBaseEnPlace)
+    date_creation = models.DateTimeField(default=datetime.datetime.now())
+    date = models.DateTimeField()
+    bFini = models.BooleanField(default=False)
+    nom = models.CharField(max_length=100, default="")
+    texte = models.TextField(default="")
+    
+    class Meta: 
+        ordering = ['date']
+        
+    def __unicode__(self):
+        return self.nom
+    

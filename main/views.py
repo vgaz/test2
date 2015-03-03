@@ -11,6 +11,8 @@ import forms
 from django.contrib.messages.storage.base import Message
 
 import Constant
+from models import Planche, PlanBaseEnPlace
+from forms import PlancheForm
 
 #################################################
 
@@ -25,30 +27,57 @@ def home(request):
                   })
 #################################################
 
-def planche(request):
+def bilanPlanche(request):
 
     num_planche = int(request.GET.get('num_planche', "1"))
-    l_vars = Variete.objects.all().values_list("nom", flat=True)
-    s_selectVars = ""
-    xhtmlEditPlan = "".join(( "<p>Sur la planche %s. Plan N° $$PLAN_ID$$</p>"%num_planche,
-                             "Variété : <input type='text' value=' ? ' name='Variete'/>",
-                             "<br />Date de début d'activité",
-                             "<br/>Evenements<br/><input type='button' value='Ajouter un évènement' name='ajout'/><br/>",
-                             "<input type='button' value='Sauver le plan' name='sauver'/><br/>"
-                             ))
-    nb_col = 3
-    nb_lig = 4
-    nb_plans = nb_col * nb_lig
     return render(request,
-                 'main/planche.html',
+                 'main/bilan_planche.html',
                  {
                   "appVersion":Constant.APP_VERSION,
-                  "num_planche": num_planche,
-                  "l_lig":range(1, nb_lig + 1),
-                  "l_col":range(1, nb_col + 1),
-                  "l_plans": range(1, nb_plans +1),
-                  "xhtmlEditPlan":xhtmlEditPlan,
-                  "l_vars":l_vars,
+                  "num_planche": num_planche
+                  })
+
+#################################################
+class CreationPlanche(CreateView):
+    model = Planche
+    form_class = PlancheForm
+    template_name = 'main/creation_planche.html'
+    http_method_names = ["get"]
+
+    def get_success_url(self):
+        ## recup info et svg
+        print "tente svg planche", self.object
+        self.object.save()
+        print "apres svg planche", self.object
+
+        return reverse('creation_planche', args=(self.object.pk, ))
+
+
+# def creationPlanche(request):
+# 
+# #     num_planche = int(request.GET.get('num_planche', "1"))
+# 
+#     return render(request,
+#                  'main/creation_planche.html',
+#                  {
+#                   "appVersion":Constant.APP_VERSION,
+#                   "form": num_planche,
+# 
+#                   })
+#################################################
+
+def editionPlanche(request):
+
+    num_planche = int(request.GET.get('num_planche', 1))
+    plans_en_place = PlanBaseEnPlace.objects.filter(planche__num = num_planche)
+    l_vars = Variete.objects.all()
+
+    return render(request,
+                 'main/edition_planche.html',
+                 {
+                  "appVersion":Constant.APP_VERSION,
+                  "planche": Planche.objects.get(num = num_planche),
+                  "l_vars":l_vars
                   })
 
 #################################################

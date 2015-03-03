@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
+from django.contrib.admin import widgets                                       
 
-from main.models import Famille
+from main.models import Famille, Planche
 
 class FormFamilyQuiz(forms.Form):
     var = None
@@ -19,3 +20,22 @@ class FormFamilyQuiz(forms.Form):
 #            self.stdout.write(msg)  
 #
 #        return self.cleaned_data
+
+class PlancheForm(forms.ModelForm):
+
+    class Meta:
+        model = Planche
+#         exclude = ('done', )
+
+    def clean(self):
+        nom = self.cleaned_data.get('nom')
+        num = self.cleaned_data.get('num')
+
+        if False:
+            msg = "I'm sure you didn't do this task before its deadline!"
+            self._errors["done"] = self.error_class([msg])
+
+        print nom, num
+        return self.cleaned_data
+
+

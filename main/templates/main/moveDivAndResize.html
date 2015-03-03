@@ -7,7 +7,12 @@
 {
     width:250px;
     height:70px;
-    border-top: 15px solid green;
+    border-color:#22FF22;
+    border-style: solid;
+    border-top-width: 15px;
+    border-right-width: 5px;
+    border-bottom-width: 5px;
+    border-left-width: 5px;
     position:absolute;
     background: rgba(255, 0, 0, 0.2);
     font-size: 2em;
@@ -34,17 +39,6 @@ function getCoordinates(event)
     screenY = event.screenY
     clientX = event.clientX
     clientY = event.clientY
-    
-    //if (event.pageX) 
-      //  {
-      //  pageX = event.pageX;
-     //   pageY = event.pageY;
-    //    }
-    //else 
-        //{
-     //   pageX = event.clientX + document.body.scrollLeft
-     //   pageY = event.clientY + document.body.scrollTop
-     //   }
 
     coordinates = "clientX = " + clientX + "; clientY = " + clientY 
    
