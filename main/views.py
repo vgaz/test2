@@ -11,7 +11,7 @@ import forms
 from django.contrib.messages.storage.base import Message
 
 import Constant
-from models import Planche, PlanBaseEnPlace
+from models import Planche
 from forms import PlancheForm
 
 #################################################
@@ -69,7 +69,6 @@ class CreationPlanche(CreateView):
 def editionPlanche(request):
 
     num_planche = int(request.GET.get('num_planche', 1))
-    plans_en_place = PlanBaseEnPlace.objects.filter(planche__num = num_planche)
     l_vars = Variete.objects.all()
 
     return render(request,

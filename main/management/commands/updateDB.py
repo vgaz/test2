@@ -27,7 +27,9 @@ class Command(BaseCommand):
             if va and va not in Variete.objects.all().values_list("nom", flat=True):
                 hVa = Variete()
                 hVa.nom = va
-                if fam: hVa.famille = Famille.objects.get(nom=fam)
+                if fam: 
+                    hVa.famille = Famille.objects.get(nom=fam)
+                
                 hVa.save()
         
         ## mise à jour associations

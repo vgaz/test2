@@ -49,62 +49,6 @@ body
 	
 }
 
-.table2
-{
-	background-color:white;
-	color:black;
-	width:100%;
-	height:100%;	
-	
-}
-.str_err
-{
-    color:red;
-    font-weight:bold;
-}
-
-.tr1
-{
-	border: 2px solid blue;
-	padding:5px;	
-}
-
-
-.td1
-{
-	background:#d6d6d6;
-	border: 2px solid gray;
-	padding:5px;
-	
-}
-.td2
-{
-    background-color: white; 
-	padding:5px;
-	vertical-align:middle;
-	text-align:center;
-	border:1px solid #6495ED;
-	font-weight: bold;
-}
-.td_url
-{
-    width:70%;
-    border: 2px solid gray;
-    padding:5px;
-    
-}
-
-.sequence_div
-{
-	width:100%
-	color:black;	
-}
-
-.sequence_details
-{
-	margin:1px; 
-}
-
 h1
 {
 	font-size:20pt;
@@ -144,11 +88,6 @@ margin:10px;
 	font-style:italic;
 }
 
-.detail_comp_testName
-{
-	margin-top:0px;
-
-}
 
 
 #connexion
@@ -183,8 +122,12 @@ margin:10px;
 	padding:5px;
 }
 
-
-.BlueFrame, .YellowFrame
+.coord_x_cm, .coord_y_cm, .largeur_cm, .hauteur_cm
+{
+    display: inline;
+}
+    
+.BlueFrame, .YellowFrame, .GreenFrame
 {
     width:20%;
     background: #FFFFFF;
@@ -192,6 +135,7 @@ margin:10px;
     border-radius:10px;
     margin:10px;
     padding:10px;
+    float: left;
 }
 
 .BlueFrame
@@ -206,13 +150,6 @@ margin:10px;
 
 .GreenFrame
 {
-    width:100px;
-    height:100px;
-    background: #FFFFFF;
-    color:#3F3F3F;
-    border-radius:10px;
-    margin:10px 10px 10px 10px;
-    padding:10px;
     border:5px solid #22FF22;
 }
 

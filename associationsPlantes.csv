@@ -21,7 +21,7 @@ Coriandre,"pomme de terre",
 Cornichon,"aneth, choux, haricot, laitue, maïs, oignon, pois, tournesol","melon, pomme de terre, tomate"
 Courge,"basilic, capucine, laitue, maïs, melon, fève, menthe","pomme de terre"
 courgette,"radis, menthe, pois, radis, haricots",pomme de terre
-epinard,"céleri, choux, fève, fraise, haricot, maïs, poireau, radis, laitues, concombres, pois, aubergine, oignon","betterave, pomme de terre, tomate, poivrons"
+epinard,"céleri, choux, fève, fraise, haricot, maïs, poireau, radis, laitue, concombre, pois, aubergine, oignon","betterave, pomme de terre, tomate, poivron"
 fenouil,"asperge, céleri, concombre, cornichon, courge, potiron","choux, haricot, pois, tomate"
 fève,"ail, carotte, céleri, radis","betterave, pomme de terre"
 fraise,"ail, haricot, laitue, oignon, poireau, thym",choux
@@ -36,7 +36,7 @@ navet,"laitue, menthe, pois, romarin",ail
 oignon,"betterave, camomille, carotte, fenouil, fraise, laitue, poireau, sarriette, tomate, chou, pomme de terre","chou, fève, haricot, pois, pomme de terre"
 panais,radis,aneth
 persil,"poireau, radis, tomate","chou, haricot, laitue, pois"
-piment,"aubergine, tomate, basilic, carotte, marjolaine, oignons, origan",fenouil
+piment,"aubergine, tomate, basilic, carotte, marjolaine, oignon, origan",fenouil
 poireau,"betterave, carotte, céleri, épinard, laitue, oignon, pomme de terre, tomate","choux, haricot, pois, fève, brocoli"
 pois,"asperge, aubergine, carotte, céleri, chou, concombre, cornichon, fève, laitue, maïs, navet, radis, épinard, tomate, haricot, courgette, céleri, pomme de terre hâtive, menthe","ail, échalote, oignon, persil, poireau, ciboulette, pommes de terre tardive"
 pomme de terre,"capucine, céleri, choux, fève, haricot, pois, raifort, ail, maïs, laitue, oignon, pétunia, œillet d'Inde, radis, potiron, courgette","aubergine, concombre, cornichon, courge, framboisier, oignon, pommier, tomate, tournesol, citrouille, courgette, épinard, potiron"

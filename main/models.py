@@ -16,7 +16,7 @@ class Famille(models.Model):
 class Variete(models.Model):
 
     nom = models.CharField(max_length=100)
-    famille = models.ForeignKey(Famille, default="", blank=True)
+    famille = models.ForeignKey(Famille, null=True, blank=True)
     avec = models.ManyToManyField("self", related_name="avec", null=True, blank=True)
     sans = models.ManyToManyField("self", related_name="sans", null=True, blank=True)
 
@@ -51,28 +51,17 @@ class PlanBase(models.Model):
     nb_of_seeds = models.IntegerField(default=1)
     largeur_cm = models.PositiveIntegerField()
     hauteur_cm = models.PositiveIntegerField()
-        
+    coord_x_cm = models.PositiveIntegerField("Position en x")
+    coord_y_cm = models.PositiveIntegerField("Position en y")
+    planche = models.ForeignKey('Planche')
+    date_creation = models.DateField()
+       
     def __unicode__(self):
         return "%s (%d), %d x %d" %( self.variete, self.nb_of_seeds, self.largeur_cm, self.hauteur_cm)
 
-
-class PlanBaseEnPlace(models.Model):
-        
-    class Meta:
-        verbose_name = "Plan de base en place"
-
-    plan_base  = models.ForeignKey('PlanBase')
-    pos_x = models.PositiveIntegerField("Position en x")
-    pos_y = models.PositiveIntegerField("Position en y")
-    planche = models.ForeignKey('Planche')
-    date_creation = models.DateField()
- 
-    def __unicode__(self):
-        return "%s / position %d %d" %(self.plan_base, self.pos_x, self.pos_y)
-
 class Evenement(models.Model):
 
-    plan_en_place = models.ForeignKey(PlanBaseEnPlace)
+    plan_base = models.ForeignKey(PlanBase)
     date_creation = models.DateTimeField(default=datetime.datetime.now())
     date = models.DateTimeField()
     bFini = models.BooleanField(default=False)
