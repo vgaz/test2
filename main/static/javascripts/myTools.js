@@ -64,9 +64,15 @@ function colorScores()
 }
 
 
-function getValOfTagName(tagName, attrName)
+function getValueOfTagName(root, tagName, attrName)
 	{
-	l_elts = document.getElementsByTagName(tagName)
+	if (root == null)
+		l_elts = document.getElementsByTagName(tagName)
+	else
+		l_elts = root.getElementsByTagName(tagName)
+
+		
+	// return the first value of tag name element
 	for(ii=0; ii < l_elts.length; ii++)
 		if (l_elts[ii]["name"] == attrName)
 			return (l_elts[ii]["value"])
@@ -83,7 +89,7 @@ function requestServer(param)
 	hReq.open("POST", url , false)
 	//hReq.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
     hReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
-	token = getValOfTagName("input", "csrfmiddlewaretoken")
+	token = getValueOfTagName(null, "input", "csrfmiddlewaretoken")
 	if (token != "")
 		hReq.setRequestHeader('X-CSRFToken', token)
 	hReq.onreadystatechange=function()

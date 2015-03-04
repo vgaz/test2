@@ -12,13 +12,27 @@ body
     float:left;
 }
 
-.suite_div
-{
-    background-color:white;
-    color:black;
-    width:100%
-}
-
+.Plan 
+    {
+    width:250px;
+    height:70px;
+    border-color:green;
+    border-style: solid;
+    border-top-width: 15px;
+    border-right-width: 5px;
+    border-bottom-width: 5px;
+    border-left-width: 5px;
+    position:absolute;
+    background: rgba(200, 255, 200, 0.6);
+    font-size: 1.2em;
+    overflow: hidden;
+    resize: both;
+    min-width: 120px;
+    min-height: 90px;
+    max-width: 400px;
+    max-height: 300px;    
+    }
+    
 .suite_header
 {
 	margin-top:0px;

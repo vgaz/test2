@@ -21,35 +21,8 @@
     border-style-right:dotted;
     }
 	
-#matrice p 
-    { 
-    margin: 3px 3px 3px 3px; 
-    padding: 1px; float: left; 
-    width: 100px; height: 100px; 
-    font-size: 2em; 
-    text-align: center; 
-    }	
-	
-.Plan 
-    {
-    width:250px;
-    height:70px;
-    border-color:#22FF22;
-    border-style: solid;
-    border-top-width: 15px;
-    border-right-width: 5px;
-    border-bottom-width: 5px;
-    border-left-width: 5px;
-    position:absolute;
-    background: rgba(200, 200, 200, 0.2);
-    font-size: 1.2em;
-    overflow: hidden;
-    resize: both;
-    min-width: 120px;
-    min-height: 90px;
-    max-width: 400px;
-    max-height: 300px;    
-    }
+
+
 </style>
 
 	<script>
@@ -58,13 +31,15 @@
     pxParCm = 5
     plan_courant = ""
     g_tab_tickets = new Array()
-    
+    jsonVarietes = {  {% for var in l_vars %} {{var.id}}:'{{var.nom}}',{% endfor %}  }
+
 function init()
-	{
+    {
     document.getElementById("matrice").style.height = ({{planche.largeur_cm}} * pxParCm ).toString() + "px"
     // la longuer est coupée , on fait un carré
     document.getElementById("matrice").style.width = ({{planche.largeur_cm}} * pxParCm ).toString() + "px"
-	}
+    }
+
 
 
 function getTicket()
@@ -76,12 +51,17 @@ function getTicket()
 function ajoutPlan()
     {
     s_nouveauPlanId = 'plan_' + getTicket()
-    s_plan = '<p class="Plan" id="' + s_nouveauPlanId + '"'
+    s_plan = '<div class="Plan" id="' + s_nouveauPlanId + '"'
     s_plan += ' onmouseover="plan_courant=' + "'" + s_nouveauPlanId + "'" + '" onmouseout="plan_courant=' + "''" + '"'
-    s_plan += '" onmousedown="toggleMove()" onmouseup="toggleMove()" variete="">'
+    s_plan += '" onmousedown="toggleMove()" onmouseup="toggleMove()" variete="" largeur_cm="" hauteur_cm="" coord_x="" cord_y="">'
     s_plan += s_nouveauPlanId 
-    s_plan += '<br/><a href="javascript:editePlan(' + "'" + s_nouveauPlanId + "'" + ')">edit</a></span>'
-    s_plan += '<br/><a href="javascript:supprimePlan('+ "'" + s_nouveauPlanId + "'" + ')">remove</a></span></p>'
+    s_plan += '<div class="variete"> </div>' 
+    s_plan += '<div class="largeur_cm"> </div> <div class="largeur_cm"> </div>' 
+    s_plan += '<div class="coord_x"> </div> <div class="coord_y"> </div>' 
+    s_plan += '<a href="javascript:editePlan(' + "'" + s_nouveauPlanId + "'" + ')"><img src="{{ STATIC_URL }}images/editor.png" width="24" height="24" title="Editer"></a></span> '
+    s_plan += '<a href="javascript:supprimePlan('+ "'" + s_nouveauPlanId + "'" + ')"><img src="{{ STATIC_URL }}images/delete.png" width="24" height="24" title="Supprimer"></a></span >'
+    s_plan += '</div>'
+    
     document.getElementById("matrice").innerHTML += s_plan
     }
    
@@ -107,13 +87,16 @@ function sauvePlan()
     {
     // recup données et ajout
     id_plan = document.getElementById("editPlan_planId").innerHTML
-    variet = document.getElementById("editPlan_select_var").value
-    
+    id_variet = document.getElementById("editPlan_select_var").value
+    // on affecte les resultats de l'édition dans le div du plan + mise à jour affiche du plan
     list = document.getElementsByClassName("Plan")
     for( ii=0;ii<list.length;ii++)
         if (list[ii].getAttribute("id") == id_plan)
-            list[ii].setAttribute("variete", variet)
-    
+            {
+            list[ii].setAttribute("variete", id_variet)
+            // mise à jour affichage
+            list[ii].getElementsByClassName("variete")[0].innerHTML = jsonVarietes[id_variet]
+            }
     }
      
      
@@ -234,7 +217,7 @@ function deplace()
     Variété : 
     <select id="editPlan_select_var" name="Variete">
     	    {% for var in l_vars %}
-    	    <option value="{{var.id}}">{{var.nom}}</option>
+    	    <option value="{{var.id}}" name="{{var.nom}}">{{var.nom}}</option>
     	    {% endfor %}
 	</select>
 	
