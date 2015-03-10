@@ -22,7 +22,7 @@
 	
     bEnMouvement = false
     pxParCm = 8
-    plan_courant = ""
+    plant_courant = ""
     g_tab_tickets = new Array()
     jsonVarietes = {  {% for var in l_vars %} {{var.id}}:'{{var.nom}}',{% endfor %}  }
 
@@ -43,24 +43,24 @@ function getTicket()
     
 function ajoutPlan()
     {
-    s_nouveauPlanId = 'plan_' + getTicket()
-    s_plan = '<div class="Plan" id="' + s_nouveauPlanId + '"'
-    s_plan += ' onmouseover="plan_courant=' + "'" + s_nouveauPlanId + "'" + '" onmouseout="plan_courant=' + "''" + '"'
-    s_plan += '" onmousedown="toggleMove()" onmouseup="toggleMove()" variete="" largeur_cm="" hauteur_cm="" coord_x_cm="" cord_y_cm="">'
-    s_plan += s_nouveauPlanId 
-    s_plan += '<div class="variete"> </div>' 
-    s_plan += '<div class="largeur_cm"> </div> <div class="hauteur_cm"> </div>' 
-    s_plan += ' <div class="coord_x_cm"> </div> <div class="coord_y_cm"> </div>' 
-    s_plan += '<br/><a href="javascript:editePlan(' + "'" + s_nouveauPlanId + "'" + ')"><img src="{{ STATIC_URL }}images/editor.png" width="24" height="24" title="Editer"></a></span> '
-    s_plan += '<a href="javascript:supprimePlan('+ "'" + s_nouveauPlanId + "'" + ')"><img src="{{ STATIC_URL }}images/delete.png" width="24" height="24" title="Supprimer"></a></span >'
-    s_plan += '</div>'
+    s_nouveauPlanId = 'plant_' + getTicket()
+    s_plant = '<div class="Plan" id="' + s_nouveauPlanId + '"'
+    s_plant += ' onmouseover="plant_courant=' + "'" + s_nouveauPlanId + "'" + '" onmouseout="plant_courant=' + "''" + '"'
+    s_plant += '" onmousedown="toggleMove()" onmouseup="toggleMove()" variete="" largeur_cm="" hauteur_cm="" coord_x_cm="" cord_y_cm="">'
+    s_plant += s_nouveauPlanId 
+    s_plant += '<div class="variete"> </div>' 
+    s_plant += '<div class="largeur_cm"> </div> <div class="hauteur_cm"> </div>' 
+    s_plant += ' <div class="coord_x_cm"> </div> <div class="coord_y_cm"> </div>' 
+    s_plant += '<br/><a href="javascript:editePlan(' + "'" + s_nouveauPlanId + "'" + ')"><img src="{{ STATIC_URL }}images/editor.png" width="24" height="24" title="Editer"></a></span> '
+    s_plant += '<a href="javascript:supprimePlan('+ "'" + s_nouveauPlanId + "'" + ')"><img src="{{ STATIC_URL }}images/delete.png" width="24" height="24" title="Supprimer"></a></span >'
+    s_plant += '</div>'
     
-    document.getElementById("matrice").innerHTML += s_plan
+    document.getElementById("matrice").innerHTML += s_plant
     }
    
 function supprimePlan(id)
     {
-    plan_courant = ''   // plus de plan courant qu'on est en train de detruire
+    plant_courant = ''   // plus de plant courant qu'on est en train de detruire
     document.getElementById('matrice').removeChild(document.getElementById(id))
     document.getElementById('divEditPlan').style.display = "none"
     }
@@ -68,24 +68,24 @@ function supprimePlan(id)
 function editePlan(id)
     {
 	document.getElementById("divEditPlan").style.display = "inline"
-	document.getElementById("editPlan_id_planche").innerHTML = {{planche.num}}
-    document.getElementById("editPlan_planId").innerHTML = id
+	document.getElementById("editPlant_id_planche").innerHTML = {{planche.num}}
+    document.getElementById("editPlan_plantId").innerHTML = id
     }
 
 function sauvePlan()
     {
-    // recup données et ajout à partir de l'id de plan de la fenetre d'edition
-    id_plan = document.getElementById("editPlan_planId").innerHTML
+    // recup données et ajout à partir de l'id de plant de la fenetre d'edition
+    id_plant = document.getElementById("editPlan_plantId").innerHTML
     id_variet = document.getElementById("editPlan_select_var").value
    
     coord_x_cm = document.getElementById("editPlan_select_var").value
     coord_y_cm = document.getElementById("editPlan_select_var").value
     hauteur_cm = document.getElementById("editPlan_select_var").value
     largeur_cm = document.getElementById("editPlan_select_var").value
-    // on affecte les resultats de l'édition dans les attributs du div du plan + mise à jour affiche du plan
+    // on affecte les resultats de l'édition dans les attributs du div du plant + mise à jour affiche du plant
     list = document.getElementsByClassName("Plan")
     for(ii=0;ii<list.length;ii++)
-        if (list[ii].getAttribute("id") == id_plan)
+        if (list[ii].getAttribute("id") == id_plant)
             {
             list[ii].setAttribute("variete", id_variet)
             // mise à jour affichage
@@ -123,15 +123,15 @@ function sauveEvenement()
 	// recup données et ajout
 	date = document.getElementById("evt_date").value
 	nom = document.getElementById("evt_nom").value
-	pos_plan = document.getElementById("pos_plan").value
-	alert('sauve ' + nom  + " " + date + " du plan " + pos_plan)
+	pos_plant = document.getElementById("pos_plant").value
+	alert('sauve ' + nom  + " " + date + " du plant " + pos_plant)
 	s_request = "cde=ajoutEvt&nom="+ nom + "&date=" + date
     rep = requestServer(s_request)
     }
 
 function sauveMatrice()
     {
-    // recup données et envoi plan par plan
+    // recup données et envoi plant par plant
     id_planche = {{planche.num}}
     list = document.getElementsByClassName("Plan")
     for(pl=0; pl<list.length; pl++)
@@ -161,12 +161,12 @@ function majXYMouse(event)
 
     coordinates =  clientX + ", " + clientY 
    
-    if (plan_courant != "")
+    if (plant_courant != "")
         {
-        obj= document.getElementById(plan_courant)
+        obj= document.getElementById(plant_courant)
         rect = obj.getBoundingClientRect()        
         coordinates += ";diff = " + (clientY - rect.top)
-        coordinates += "\nplan_courant= " + plan_courant + " style.top " + rect.top + " margins : " + obj.style.marginLeft + "; " + obj.style.marginTop
+        coordinates += "\nplant_courant= " + plant_courant + " style.top " + rect.top + " margins : " + obj.style.marginLeft + "; " + obj.style.marginTop
         }
     //matr = document.getElementById("matrice")
     //coordinates += " || matrice margins" + matr.style.marginLeft + " " + matr.style.marginTop
@@ -177,10 +177,10 @@ function majXYMouse(event)
 
 function toggleMove()
     {
-    if (plan_courant == "")
+    if (plant_courant == "")
         return
         
-    obj=document.getElementById(plan_courant)
+    obj=document.getElementById(plant_courant)
     rect = obj.getBoundingClientRect()
     if(bEnMouvement == false)
         {
@@ -201,10 +201,10 @@ function toggleMove()
 
 function deplace()
     {
-    if (plan_courant == "")
+    if (plant_courant == "")
         return
     
-    obj=document.getElementById(plan_courant)
+    obj=document.getElementById(plant_courant)
     matr = document.getElementById("matrice")
 
     if (bEnMouvement)
@@ -224,7 +224,7 @@ function deplace()
 {% csrf_token %}
 
 <div id="main" onmousemove="majXYMouse(event);deplace();" style="width: 80%">
-<input type="button" onclick="ajoutPlan()" value="Ajout d'un plan">
+<input type="button" onclick="ajoutPlan()" value="Ajout d'un plant">
 &nbsp;
 <input type="button" onclick="sauveMatrice()" value="Sauvegarde de la matrice de planche">
 
@@ -235,7 +235,7 @@ function deplace()
 <div id="matrice"></div>
 
 <div id="divEditPlan" style="display: none" class="BlueFrame">
-	<h2>Gestion du plan implanté en <span id="editPlan_planId"></span></h2>
+	<h2>Gestion du plant implanté en <span id="editPlan_plantId"></span></h2>
 	<p>Sur la planche N° <span id="editPlan_id_planche"></span></p>
     Variété : 
     <select id="editPlan_select_var" name="Variete">

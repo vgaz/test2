@@ -23,16 +23,16 @@ def serveRequest(request):
     ## --------------- request to update database 
     if cde =='sauve_matrice':
         print __name__, "sauve_matrice"
-        plan = PlanBase()
-        plan.variete = Variete.objects.get(id = request.POST.get("variete",""))
-        plan.nb_graines = request.POST.get("nb_graines","")
-        plan.largeur_cm = request.POST.get("largeur_cm","")
-        plan.hauteur_cm = request.POST.get("hauteur_cm","")
-        plan.coord_x_cm = request.POST.get("coord_x_cm","")
-        plan.coord_y_cm = request.POST.get("coord_y_cm","")
-        plan.planche = Planche.objects.get(id=request.POST.get("id_planche",""))
-        plan.date_creation = datetime.datetime.now()
-        plan.save()
+        plant = PlantBase()
+        plant.variete = Variete.objects.get(id = request.POST.get("variete",""))
+        plant.nb_graines = request.POST.get("nb_graines","")
+        plant.largeur_cm = request.POST.get("largeur_cm","")
+        plant.hauteur_cm = request.POST.get("hauteur_cm","")
+        plant.coord_x_cm = request.POST.get("coord_x_cm","")
+        plant.coord_y_cm = request.POST.get("coord_y_cm","")
+        plant.planche = Planche.objects.get(id=request.POST.get("id_planche",""))
+        plant.date_creation = datetime.datetime.now()
+        plant.save()
         return HttpResponse("OK")
     
     ## --------------- request to update database 

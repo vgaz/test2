@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import Http404, HttpResponse
 from django.views.generic.edit import CreateView
 from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from models import Variete, Famille
 from django.template.defaultfilters import random
@@ -38,32 +39,36 @@ def bilanPlanche(request):
                   })
 
 #################################################
+
 class CreationPlanche(CreateView):
+    
     model = Planche
     form_class = PlancheForm
     template_name = 'main/creation_planche.html'
-    http_method_names = ["get"]
+    success_url = reverse_lazy('creation_planche')
+    http_method_names = ['get', 'post']
+    
+    def get_initials(self):
+        return {  "appVersion":Constant.APP_VERSION,
+                  "appName":Constant.APP_NAME
+                }
+    
+    def dispatch(self, *args, **kwargs):
+        self.appVersion = Constant.APP_VERSION
+        self.appName = Constant.APP_NAME
+        return super(CreationPlanche, self).dispatch(*args, **kwargs)
 
-    def get_success_url(self):
-        ## recup info et svg
-        print "tente svg planche", self.object
-        self.object.save()
-        print "apres svg planche", self.object
+    def form_invalid(self, form):
+        return HttpResponse("form is invalid.. this is just an HttpResponse object")
+    
+#     def form_valid(self, form):    si besoin de surcharge
+#         form.save()
+#         return http.HttpResponse("form is valid.")
 
-        return reverse('creation_planche', args=(self.object.pk, ))
+
+   
 
 
-# def creationPlanche(request):
-# 
-# #     num_planche = int(request.GET.get('num_planche', "1"))
-# 
-#     return render(request,
-#                  'main/creation_planche.html',
-#                  {
-#                   "appVersion":Constant.APP_VERSION,
-#                   "form": num_planche,
-# 
-#                   })
 #################################################
 
 def editionPlanche(request):

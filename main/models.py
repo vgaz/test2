@@ -42,13 +42,13 @@ class Planche(models.Model):
         return "Planche %d : %s, %d m x %d cm" % (self.num, self.nom, self.longueur_m, self.largeur_cm)
     
     
-class PlanBase(models.Model):
+class PlantBase(models.Model):
     
     class Meta:
         verbose_name = "Plan de base"
         
     variete = models.ForeignKey(Variete)
-    nb_of_seeds = models.IntegerField(default=1)
+    nb_graines = models.IntegerField(default=1)
     largeur_cm = models.PositiveIntegerField()
     hauteur_cm = models.PositiveIntegerField()
     coord_x_cm = models.PositiveIntegerField("Position en x")
@@ -61,7 +61,7 @@ class PlanBase(models.Model):
 
 class Evenement(models.Model):
 
-    plan_base = models.ForeignKey(PlanBase)
+    plan_base = models.ForeignKey(PlantBase)
     date_creation = models.DateTimeField(default=datetime.datetime.now())
     date = models.DateTimeField()
     bFini = models.BooleanField(default=False)

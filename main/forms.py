@@ -25,17 +25,17 @@ class PlancheForm(forms.ModelForm):
 
     class Meta:
         model = Planche
-#         exclude = ('done', )
+        exclude = ()## on garde tous les champs pour le moment
 
     def clean(self):
-        nom = self.cleaned_data.get('nom')
-        num = self.cleaned_data.get('num')
-
+#         nom = self.cleaned_data.get('nom')
+#         num = self.cleaned_data.get('num')
+#         self.cleaned_data['num'] = 554455  ici, on retouche eventuellement les champs
         if False:
             msg = "I'm sure you didn't do this task before its deadline!"
             self._errors["done"] = self.error_class([msg])
 
-        print nom, num
+        
         return self.cleaned_data
 
-
+    

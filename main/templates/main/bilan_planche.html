@@ -13,14 +13,9 @@
 
 
 <script>
-//$(function() {
-//$( "#sortable" ).sortable();
-//$( "#sortable" ).disableSelection();
-//});
 
 num_planche = {{num_planche}}
 
-tab_plans = []
 
 function init()
 {
@@ -40,7 +35,7 @@ function init()
 
 {% block content %}
 <div style="width: 90%">
-<input type="button" onclick="ajoutPlan()" value="Ajout d'un plan">
+<input type="button" onclick="ajoutPlan()" value="Ajout d'un plant">
 
 &nbsp;Nb lignes : 
 <select id="select_lig" name="nbLig" onchange="changeLig()">
@@ -62,14 +57,14 @@ function init()
 
 
 <div id="sortable">
-    {% for plan in l_plans %}
-    <p class="GreenFrame" id="plan_{{plan}}" variete="" onclick="editPlan({{plan}})"><span>plan {{plan}}</span></p>
+    {% for plant in l_plants %}
+    <p class="GreenFrame" id="plant_{{plant}}" variete="" onclick="editPlan({{plant}})"><span>plant {{plant}}</span></p>
     {% endfor %}
 </div>
 
 <div class="BlueFrame" style="display: none" id="divEditPlan">
 	<h2>Gestion du plan en place</h2>
-	<p>Sur la planche N° <span id="id_planche"></span>, plan N° <span id="plan_pos_x"></span><span id="plan_pos_y"></span></p>
+	<p>Sur la planche N° <span id="id_planche"></span>, plant N° <span id="plant_pos_x"></span><span id="plant_pos_y"></span></p>
     Variété : 
     <select id="select_var" name="Variete">
     	    {% for var in l_vars %}
@@ -80,8 +75,8 @@ function init()
 	</select>
     <br />Date de début d'activité
     <br/>Evenements<br/>
-    <input type='button' value='Ajouter un évènement' name='ajout' onclick="ajoutEvenement({{plan}})"/><br/>
-    <input type='button' value='Sauver le plan' name='sauver'/><br/>
+    <input type='button' value='Ajouter un évènement' name='ajout' onclick="ajoutEvenement({{plant}})"/><br/>
+    <input type='button' value='Sauver le plant' name='sauver'/><br/>
                             
 </div>
 <div class="YellowFrame" style="display: none" id="divEditEvenement">
