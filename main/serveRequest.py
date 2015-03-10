@@ -7,7 +7,7 @@ Created on Nov 26, 2013
 
 from django.http import HttpResponse
 from models import * ##Evenement, PlanBase, Planche, Variete
-import datetime
+import sys
 
 def serveRequest(request):
     """Received a request and return specific response"""
@@ -25,15 +25,19 @@ def serveRequest(request):
         print __name__, "sauve_matrice"
         plant = PlantBase()
         plant.variete = Variete.objects.get(id = request.POST.get("variete",""))
-        plant.nb_graines = request.POST.get("nb_graines","")
-        plant.largeur_cm = request.POST.get("largeur_cm","")
-        plant.hauteur_cm = request.POST.get("hauteur_cm","")
-        plant.coord_x_cm = request.POST.get("coord_x_cm","")
-        plant.coord_y_cm = request.POST.get("coord_y_cm","")
-        plant.planche = Planche.objects.get(id=request.POST.get("id_planche",""))
+        plant.nb_graines = int(request.POST.get("nb_graines",0))
+        plant.largeur_cm = int(request.POST.get("largeur_cm",0))
+        plant.hauteur_cm = int(request.POST.get("hauteur_cm",0))
+        plant.coord_x_cm = int(request.POST.get("coord_x_cm",0))
+        plant.coord_y_cm = int(request.POST.get("coord_y_cm",0))
+        plant.planche = Planche.objects.get(id=request.POST.get("id_planche",0))
         plant.date_creation = datetime.datetime.now()
-        plant.save()
-        return HttpResponse("OK")
+        try:
+            plant.save()
+            return HttpResponse('{"status":"true","id_plant":%d}'%plant.pk)
+        except:
+            return HttpResponse('{"status":"false","err":%s}'%sys.exc_info()[1])
+
     
     ## --------------- request to update database 
     if cde == "ajoutEvt":

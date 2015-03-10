@@ -45,19 +45,25 @@ class Planche(models.Model):
 class PlantBase(models.Model):
     
     class Meta:
-        verbose_name = "Plan de base"
+        verbose_name = "Plant de base"
         
     variete = models.ForeignKey(Variete)
     nb_graines = models.IntegerField(default=1)
-    largeur_cm = models.PositiveIntegerField()
-    hauteur_cm = models.PositiveIntegerField()
-    coord_x_cm = models.PositiveIntegerField("Position en x")
-    coord_y_cm = models.PositiveIntegerField("Position en y")
+    largeur_cm = models.PositiveIntegerField('largeur cm')
+    hauteur_cm = models.PositiveIntegerField('hauteur cm')
+    coord_x_cm = models.PositiveIntegerField("pos x cm")
+    coord_y_cm = models.PositiveIntegerField("pos y cm")
     planche = models.ForeignKey('Planche')
     date_creation = models.DateField()
        
     def __unicode__(self):
-        return "%s (%d), %d x %d" %( self.variete, self.nb_of_seeds, self.largeur_cm, self.hauteur_cm)
+        return "%s (%d), %d x %d, pos: %d %d sur planche %d" %( self.variete, 
+                                                                self.nb_graines, 
+                                                                self.largeur_cm, 
+                                                                self.hauteur_cm, 
+                                                                self.coord_x_cm, 
+                                                                self.coord_y_cm, 
+                                                                self.planche.num)
 
 class Evenement(models.Model):
 

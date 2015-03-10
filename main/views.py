@@ -54,8 +54,6 @@ class CreationPlanche(CreateView):
                 }
     
     def dispatch(self, *args, **kwargs):
-        self.appVersion = Constant.APP_VERSION
-        self.appName = Constant.APP_NAME
         return super(CreationPlanche, self).dispatch(*args, **kwargs)
 
     def form_invalid(self, form):
