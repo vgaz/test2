@@ -38,8 +38,7 @@ function ajoutPlan()
     //s_plant += ' onmouseover="plant_courant=' + "'" + s_nouveauPlanId + "'" + '" onmouseout="plant_courant=' + "''" + '"'
     s_plant += ' onmousedown="toggleMove(this)" onmouseup="toggleMove(this)" variete="" largeur_cm="" hauteur_cm="" coord_x_cm="" cord_y_cm=""' 
     s_plant += ' onclick="editePlan(this)"' + '>'
-    s_plant += '<span><div class="num_plant">'+ s_nouveauPlanId + '</div>'
-    s_plant += '<div class="variete"> </div>' + '</span><br/>' 
+    s_plant += '<span><div class="num_plant"> </div><div class="variete"> </div></span><br/>' 
     s_plant += '<div class="largeur_cm"> </div> <div class="hauteur_cm"> </div><br/>' 
     s_plant += ' <div class="coord_x_cm"> </div> <div class="coord_y_cm"> </div><br/>' 
     //s_plant += '<br/><a href="javascript:editePlan(' + "'" + s_nouveauPlanId + "'" + ')"><img src="{{ STATIC_URL }}images/editor.png" width="24" height="24" title="Editer"></a></span> '
@@ -48,12 +47,8 @@ function ajoutPlan()
     
     document.getElementById("matrice").innerHTML += s_plant
     
-    list = document.getElementsByClassName("plant")
-        for(ii=0;ii<list.length;ii++)
-            if (list[ii].getAttribute("id") == s_nouveauPlanId)
-                {
-                affichePlant(list[ii])
-                }
+    affichePlants()
+                
     }
    
 function supprimePlan(plant_id)
@@ -132,8 +127,8 @@ function sauveMatrice()
     for(pl=0; pl<list.length; pl++)
         {
         id_plant = list[pl].getAttribute("id")
-        if (id_plant.count("_")>0)
-            continue
+        if (id_plant.search("_") != 1)
+            continue // ancien deja enregistré
         nb_graines = 3
         variete = list[pl].getAttribute("variete")
         largeur_cm = list[pl].getAttribute("largeur_cm")
