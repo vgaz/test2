@@ -12,19 +12,20 @@ import forms
 from django.contrib.messages.storage.base import Message
 
 import Constant
-from models import Planche
+from models import Planche, PlantBase
 from forms import PlancheForm
 
 #################################################
 
 def home(request):
 #    return HttpResponse( 'coucou', content_type="application/json")
-
+    l_planches = Planche.objects.all()
     return render(request,
                  'main/home.html',
                  {
                   "appVersion":Constant.APP_VERSION,
                   "appName":Constant.APP_NAME,
+                  "l_planches":l_planches
                   })
 #################################################
 
@@ -56,8 +57,6 @@ class CreationPlanche(CreateView):
     def dispatch(self, *args, **kwargs):
         return super(CreationPlanche, self).dispatch(*args, **kwargs)
 
-    def form_invalid(self, form):
-        return HttpResponse("form is invalid.. this is just an HttpResponse object")
     
 #     def form_valid(self, form):    si besoin de surcharge
 #         form.save()
@@ -73,13 +72,15 @@ def editionPlanche(request):
 
     num_planche = int(request.GET.get('num_planche', 1))
     l_vars = Variete.objects.all()
-
+    planche = Planche.objects.get(num = num_planche)
+    l_plants = PlantBase.objects.filter(planche = planche)
     return render(request,
                  'main/edition_planche.html',
                  {
                   "appVersion":Constant.APP_VERSION,
-                  "planche": Planche.objects.get(num = num_planche),
-                  "l_vars":l_vars
+                  "planche": planche,
+                  "l_vars":l_vars,
+                  "l_plants":l_plants
                   })
 
 #################################################

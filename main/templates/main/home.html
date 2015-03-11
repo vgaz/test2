@@ -10,8 +10,12 @@
   <li><a href="{% url 'tab_varietes' %}">Tableau des variétés</a></li>
   <li><a href="{% url 'quiz' %}">Quiz Familles et Variétés</a></li>
   <li><a href="{% url 'creation_planche' %}">Création de la planche</a></li>
-  <li><a href="{% url 'edition_planche' %}">Définition de la matrice de plans dans la planche</a></li>
 </ul>
+<p><b>Définition des plants</b><br/>   
+            {% for planche in l_planches %}
+            {{planche}}<a href="{% url 'edition_planche' %}?num_planche={{planche.num}}"><img src="{{ STATIC_URL }}images/editor.png" width="24" height="24" title="Editer"></a><br/>
+            {% endfor %}
+  </p>
 </div>
 
 {% endblock %}

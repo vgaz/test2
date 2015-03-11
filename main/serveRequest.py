@@ -30,7 +30,7 @@ def serveRequest(request):
         plant.hauteur_cm = int(request.POST.get("hauteur_cm",0))
         plant.coord_x_cm = int(request.POST.get("coord_x_cm",0))
         plant.coord_y_cm = int(request.POST.get("coord_y_cm",0))
-        plant.planche = Planche.objects.get(id=request.POST.get("id_planche",0))
+        plant.planche = Planche.objects.get(num=int(request.POST.get("id_planche",0)))
         plant.date_creation = datetime.datetime.now()
         try:
             plant.save()

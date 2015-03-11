@@ -33,7 +33,7 @@ class Variete(models.Model):
 class Planche(models.Model):
     """object composant la structure de base qui sera dupliquée sur toute la longueur de la planche """
     
-    num = models.IntegerField()
+    num = models.IntegerField(unique=True)
     nom = models.CharField(max_length=100, default="")
     longueur_m = models.IntegerField()
     largeur_cm = models.IntegerField()
