@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.core.management.base import BaseCommand       
-from main.models import Famille, Variete
+from main.models import Famille, Variete, TypeEvenement
 import csv
 
 class Command(BaseCommand):
@@ -9,6 +9,14 @@ class Command(BaseCommand):
     help = "updateDB"
 
     def handle(self, *args, **options):
+        
+        ## maj type d'évenement
+        l_typeEvt = [unicode(t) for t in TypeEvenement.objects.all().values_list("nom", flat=True)]
+        for n in ("début", "fin", 'autre'):
+            if n not in l_typeEvt:
+                hTE = TypeEvenement()
+                hTE.nom = n
+                hTE.save()
         
         reader = csv.DictReader(open("famillesLegumes.csv", "rb"))
         

@@ -12,7 +12,7 @@ import forms
 from django.contrib.messages.storage.base import Message
 
 import Constant
-from models import Planche, PlantBase
+from models import Planche, PlantBase, TypeEvenement
 from forms import PlancheForm
 
 #################################################
@@ -72,14 +72,17 @@ def editionPlanche(request):
 
     num_planche = int(request.GET.get('num_planche', 1))
     l_vars = Variete.objects.all()
+    l_typesEvt = TypeEvenement.objects.all()
     planche = Planche.objects.get(num = num_planche)
     l_plants = PlantBase.objects.filter(planche = planche)
+
     return render(request,
                  'main/edition_planche.html',
                  {
                   "appVersion":Constant.APP_VERSION,
                   "planche": planche,
                   "l_vars":l_vars,
+                  "l_typesEvt":l_typesEvt,
                   "l_plants":l_plants
                   })
 

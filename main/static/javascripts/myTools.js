@@ -106,7 +106,6 @@ function requestServer(param)
 			return msg;
 			}
   		}
-	//hReq.send(JSON.stringify(param))
 	hReq.send(param)
 
 	return hReq.responseText

@@ -54,10 +54,9 @@ class PlantBase(models.Model):
     coord_x_cm = models.PositiveIntegerField("pos x cm")
     coord_y_cm = models.PositiveIntegerField("pos y cm")
     planche = models.ForeignKey('Planche')
-    date_creation = models.DateField()
        
     def __unicode__(self):
-        return "%s (%d), %d x %d, pos: %d %d sur planche %d" %( self.variete, 
+        return "%d %s (%d), %d x %d, pos: %d %d sur planche %d" %( self.id,  self.variete, 
                                                                 self.nb_graines, 
                                                                 self.largeur_cm, 
                                                                 self.hauteur_cm, 
@@ -65,14 +64,20 @@ class PlantBase(models.Model):
                                                                 self.coord_y_cm, 
                                                                 self.planche.num)
 
+class TypeEvenement(models.Model):
+    nom = models.CharField(max_length=100)
+    def __unicode__(self):
+        return self.nom
+    
 class Evenement(models.Model):
 
-    plan_base = models.ForeignKey(PlantBase)
+    plant_base = models.ForeignKey(PlantBase)
     date_creation = models.DateTimeField(default=datetime.datetime.now())
     date = models.DateTimeField()
-    bFini = models.BooleanField(default=False)
     nom = models.CharField(max_length=100, default="")
     texte = models.TextField(default="")
+    bFini = models.BooleanField(default=False)
+    type =  models.ForeignKey(TypeEvenement)
     
     class Meta: 
         ordering = ['date']

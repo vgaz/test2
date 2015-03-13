@@ -36,8 +36,7 @@ function getTicket()
 function ajouteNouveauPlant()
     {
     s_nouveauPlanId = getTicket() + '_' 
-    s_plant = '<div class="plant" id="$ID_PLANT$" onmousedown="toggleMove(this)" \
-                onmouseup="toggleMove(this)" variete="" largeur_cm="" hauteur_cm="" \
+    s_plant = '<div class="plant" id="$ID_PLANT$" onmousedown="toggleMove(this)" onmouseup="toggleMove(this)" variete="" largeur_cm="" hauteur_cm="" \
                 coord_x_cm="" coord_y_cm="" nb_graines="" onclick="editePlan(this)" >'
     s_plant += '<span><div class="num_plant"> </div><div class="variete"> </div></span><br/>' 
     s_plant += '<div class="largeur_cm"> </div> <div class="hauteur_cm"> </div><br/>' 
@@ -53,16 +52,45 @@ function ajouteNouveauPlant()
    
 function supprimePlant(plant_id)
     {
-        //alert( plant_id)
     document.getElementById('divEditPlan').style.display = "none"
     document.getElementById('matrice').removeChild(document.getElementById(plant_id))
     }
 
 function editePlan(hPlant)
     {
-	document.getElementById("divEditPlan").style.display = "inline"
-	document.getElementById("editPlant_id_planche").innerHTML = {{planche.num}}
-    document.getElementById("editPlant_plantId").innerHTML = hPlant.getAttribute("id")
+    // recup evenements liés à ce plant
+    id_plant = hPlant.getAttribute("id")
+    
+    if (id_plant.search("_") != 1)
+        { 
+        // recup evts
+        s_request = "cde=getEvtsPlant&id="+ id_plant
+        rep = requestServer(s_request)	
+    
+        jsonRep = JSON.parse(rep)
+        s_debut = ""
+        s_fin = ""
+        s_evts = '<div class="listEvts">\n'
+        if (jsonRep.status == 'true' )
+            {
+            //alert('plant ' + jsonRep.l_evts )
+            for(ii=0;ii<jsonRep.l_evts.length;ii++)
+                {
+                if (jsonRep.l_evts[ii].type == "début")
+                    s_debut = "<p>Début :" + jsonRep.l_evts[ii].date + " " + jsonRep.l_evts[ii].nom + "</p>"  
+                else if (jsonRep.l_evts[ii].type == "fin")
+                    s_fin = "<p>Fin :" + jsonRep.l_evts[ii].date + " " + jsonRep.l_evts[ii].nom + "</p>"  
+                else
+                    s_evts +=  "<p>" + jsonRep.l_evts[ii].nom + " date :" + jsonRep.l_evts[ii].date + "</p>"
+                }
+            }    
+        s_evts += s_debut + s_fin + "</div>\n"
+
+        document.getElementById("editPlant_evts").innerHTML = s_evts
+        }
+    document.getElementById("editPlant_id_planche").innerHTML = {{planche.num}}
+    document.getElementById("editPlant_plantId").innerHTML = id_plant
+    document.getElementById("divEditPlan").style.display = "inline"
     }
 
 function sauvePlant()
@@ -118,7 +146,6 @@ function sauveEvenement()
 	date = document.getElementById("evt_date").value
 	nom = document.getElementById("evt_nom").value
 	pos_plant = document.getElementById("pos_plant").value
-	alert('sauve ' + nom  + " " + date + " du plant " + pos_plant)
 	s_request = "cde=ajoutEvt&nom="+ nom + "&date=" + date
     rep = requestServer(s_request)
     }
@@ -131,24 +158,28 @@ function sauveMatrice()
     for(pl=0; pl<list.length; pl++)
         {
         id_plant = list[pl].getAttribute("id")
-        if (id_plant.search("_") != 1)
-            continue // ancien deja enregistré
- 
         nb_graines = list[pl].getAttribute("nb_graines")
         variete = list[pl].getAttribute("variete")
         largeur_cm = list[pl].getAttribute("largeur_cm")
         hauteur_cm = list[pl].getAttribute("hauteur_cm")
         coord_x_cm = list[pl].getAttribute("coord_x_cm")
         coord_y_cm = list[pl].getAttribute("coord_y_cm")
-        
-        s_request = "cde=sauve_matrice&id_planche=" + id_planche + "&variete=" + variete + "&largeur_cm="+ largeur_cm +"&hauteur_cm="+ hauteur_cm + "&coord_x_cm="+ coord_x_cm +"&coord_y_cm="+ coord_y_cm
+        s_err = ""
+        if (variete == "")
+            s_err  += "La variété n'est pas définie\n\n"        
+
+        if (s_err != "")
+            {
+            alert("Sauvegarde impossible plan " + id_plant + "\n" + s_err)
+            continue
+            }
+            
+        s_request = "cde=sauve_plant&id="+ id_plant + "&id_planche=" + id_planche + "&variete=" + variete + "&largeur_cm="+ largeur_cm +"&hauteur_cm="+ hauteur_cm + "&coord_x_cm="+ coord_x_cm +"&coord_y_cm="+ coord_y_cm
         rep = requestServer(s_request)
-        alert('enegistrement' + list[pl].getAttribute("id") + " réponse = " +  rep)
+        //alert('enegistrement' + list[pl].getAttribute("id") + " réponse = " +  rep)
         jsonRep = JSON.parse(rep)
         if (jsonRep.status == 'true' )
             {
-            alert('plant ' + jsonRep.id_plant )
-
             list[pl].setAttribute("id", jsonRep.id_plant)
             document.getElementById("divInfoDebug").innerHTML = list[pl].getAttribute("id")
 
@@ -234,7 +265,7 @@ function deplace()
 <div id="main" onmousemove="majXYMouse(event);deplace();" style="width: 80%">
 <input type="button" onclick="ajouteNouveauPlant()" value="Ajout d'un plant">
 &nbsp;
-<input type="button" onclick="sauveMatrice()" value="Sauvegarde de la matrice de planche">
+<input type="button" onclick="sauveMatrice()" value="Sauvegarder tous les plants">
 
 <span id="divInfoDebug" ></span>
 <br/><br/>
@@ -260,21 +291,29 @@ function deplace()
     	    {% endfor %}
 	</select>
     <br/>Nb graines : <input type="text" name="editPlant_nb_graines" value="1">
-    <br/>Date de début d'activité : 
-    <br/>Evenements<br/>
+    <br/><br/><b>Evenements</b><br/><span id="editPlant_evts"> </span>
+    <br/>
     <input type='button' value='Sauver le plant' name='sauver' onclick="sauvePlant()"/><br/>                   
-    <input type='button' value='Supprimer le plant' name='supprime' onclick="supprimePlant(document.getElementById('editPlant_plantId').innerHTML)"/><br/>
     <input type='button' value='Ajouter un évènement' name='ajout' onclick="ajouteEvenement()"/><br/>
+    <hr/>
+    <input type='button' value='Supprimer le plant' name='supprime' onclick="supprimePlant(document.getElementById('editPlant_plantId').innerHTML)"/><br/>
 </div>
 
 <div class="YellowFrame" style="display: none" id="divEditEvenement">
 	<p>
 		<h2>Gestion d'évenement</h2>
-		Nom : <input type='text' value='' id='evt_nom'/><br/>
-		Date (jj-mm-aaaa): <input type='text' value='' id='evt_date'/><br/>
-		<input type='button' value='Cancel' name='sauver' onclick="document.getElementById('divEditEvenement').style.display = 'none'" />
-		<input type='button' value='OK' name='sauver' onclick="sauveEvenement()" /><br/>
-
+		<table>
+		<tr><td>Type :
+		              {% for typeEvt in l_typesEvt %}  
+		              {{typeEvt.nom}}<input type="checkbox" name="{{typeEvt.nom}}" value="{{typeEvt.nom}}">
+		              {% endfor %}
+		</td></tr>
+        <tr><td>Nom : <input type='text' value='' id='evt_nom'/></td></tr>
+		<tr><td>Date : (jj-mm-aaaa): <input type='text' value='' id='evt_date'/></td></tr>
+		<tr><td><input type='button' value='Cancel' name='sauver' onclick="document.getElementById('divEditEvenement').style.display = 'none'" />
+		        <input type='button' value='OK' name='sauver' onclick="sauveEvenement()" />
+		</td></tr>
+        </table>
 	</p>
 </div>
 
