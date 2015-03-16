@@ -32,7 +32,7 @@ def serveRequest(request):
 
     ## --------------- request to update database 
     if cde =='sauve_plant':
-        print __name__, "sauve_plant"
+        print __name__, "sauve_plant", request.POST
 
         try:
             id_plant = request.POST.get("id")
@@ -49,7 +49,7 @@ def serveRequest(request):
             plant.coord_y_cm = int(request.POST.get("coord_y_cm",0))
             plant.planche = Planche.objects.get(num=int(request.POST.get("id_planche",0)))
             plant.save()
-            return HttpResponse('{"status":"true","id_plant":%d}'%plant.pk)
+            return HttpResponse('{"status":"true","id_plant":%d}'%plant.pk, content_type="application/json")
         except:
             return HttpResponse('{"status":"false","err":%s}'%sys.exc_info()[1])
 

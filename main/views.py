@@ -117,18 +117,17 @@ def quiz(request):
         
         print 'rep', repIdFam
          
-        if repIdFam == varAsked.famille.pk:
+        if repIdFam == varAsked.famille.id:
             message = "BRAVO"
         else:
             message = "PERDU"
-            
+
         message += ", %s est de la famille des %ss " % (varAsked.nom, varAsked.famille)
-            
+
         ## restart a new form
         form = forms.FormFamilyQuiz()
 
-  
-    form.var = random(Variete.objects.filter(famille_id__in=[14,16,17,21]).values("nom", "id"))
+    form.var = random(Variete.objects.filter(famille__isnull=False).values("nom", "id"))
 
     return render(request, 'main/quiz.html',
             {
