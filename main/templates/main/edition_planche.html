@@ -100,11 +100,9 @@ function editePlant(hPlant)
             document.getElementById("editPlant_select_var").options[ii].selected=true
             break
             }
-    //maj nb de graines 
-    nbGr  = hPlant.getAttribute("nb_graines")
-    document.getElementById("editPlant_nb_graines").value = nbGr
-  
-    // maj num planche                   
+
+    // maj infos plant                   
+    document.getElementById("editPlant_nb_graines").value = hPlant.getAttribute("nb_graines")
     document.getElementById("editPlant_id_planche").innerHTML = {{planche.num}}
     document.getElementById("editPlant_plantId").innerHTML = id_plant
     document.getElementById("divEditPlan").style.display = "inline"
@@ -204,7 +202,7 @@ function sauveMatrice()
             alert("Sauvegarde impossible plan " + id_plant + "\n" + s_err)
             continue
             }
-            
+  
         s_request = "cde=sauve_plant&id_plant="+ id_plant + "&id_planche=" + id_planche + "&variete=" + variete + "&largeur_cm="+ largeur_cm +"&hauteur_cm="+ hauteur_cm 
         s_request += "&coord_x_cm="+ coord_x_cm + "&coord_y_cm=" + coord_y_cm + "&nb_graines=" + nb_graines 
         rep = requestServer(s_request)
@@ -218,9 +216,6 @@ function sauveMatrice()
     affichePlants()
 
     }
-    
-
-
 
 function majXYMouse(event) 
     {
@@ -243,9 +238,7 @@ function majXYMouse(event)
         
         affichePlant(obj)
         }
-    
     //document.getElementById("divInfoDebug").innerHTML = plant_courant
-
     }
 
 function toggleMove(hPlant)
@@ -283,7 +276,6 @@ function deplace()
         obj.style.marginTop = clientY - matr.offsetTop - 10 + "px"
         } 
     }
-
 </script>
 
 {% endblock %}
@@ -342,7 +334,6 @@ function deplace()
                       <option value="{{typeEvt.nom}}">{{typeEvt.titre}}</option>
                       {% endfor %}
                       </select>
-
 		</td></tr>
         <tr><td>Nom : <input type='text' value='' id='edit_evt_nom'/></td></tr>
 		<tr><td>Date : (jj/mm/aaaa): <input type='text' value='' id='edit_evt_date'/></td></tr>
@@ -350,10 +341,7 @@ function deplace()
 		        <input type='button' value='Sauver' name='sauver' onclick="sauveEvenement()" />
 		</td></tr>
         </table>
-        
 </div>
-
-
 
 </div>
 {% endblock %}

@@ -18,7 +18,6 @@ from forms import PlancheForm
 #################################################
 
 def home(request):
-#    return HttpResponse( 'coucou', content_type="application/json")
     l_planches = Planche.objects.all()
     return render(request,
                  'main/home.html',
@@ -27,18 +26,30 @@ def home(request):
                   "appName":Constant.APP_NAME,
                   "l_planches":l_planches
                   })
+    
 #################################################
 
-def bilanPlanche(request):
+def chronoPlanche(request):
 
-    num_planche = int(request.GET.get('num_planche', "1"))
+
+    l_vars = Variete.objects.all()
+    l_typesEvt = []
+    for et in TypeEvenement.objects.all():
+        l_typesEvt.append({"id":et.id, 
+                           "nom":et.nom, 
+                           "titre":Constant.d_TitresTypeEvt[et.nom]})
+
+    planche = Planche.objects.get(num = int(request.GET.get('num_planche', 1)))
+    l_plants = PlantBase.objects.filter(planche = planche)
+
     return render(request,
-                 'main/bilan_planche.html',
+                 'main/chrono_planche.html',
                  {
                   "appVersion":Constant.APP_VERSION,
-                  "num_planche": num_planche
+                  "planche": planche,
+                  "l_typesEvt":l_typesEvt,
+                  "l_plants":l_plants
                   })
-
 #################################################
 
 class CreationPlanche(CreateView):
@@ -70,7 +81,6 @@ class CreationPlanche(CreateView):
 
 def editionPlanche(request):
 
-    num_planche = int(request.GET.get('num_planche', 1))
     l_vars = Variete.objects.all()
     l_typesEvt = []
     for et in TypeEvenement.objects.all():
@@ -78,7 +88,7 @@ def editionPlanche(request):
                            "nom":et.nom, 
                            "titre":Constant.d_TitresTypeEvt[et.nom]})
 
-    planche = Planche.objects.get(num = num_planche)
+    planche = Planche.objects.get(num = int(request.GET.get('num_planche', 1)))
     l_plants = PlantBase.objects.filter(planche = planche)
 
     return render(request,

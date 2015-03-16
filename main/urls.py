@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url(r'^quiz/', 'main.views.quiz', name='quiz'),
     
     url(r'^edition_planche/', 'main.views.editionPlanche', name='edition_planche'),
-   # url(r'^bilan_planche/', 'main.views.bilanPlanche', name='bilan_planche'),
+    url(r'^chrono_planche/', 'main.views.chronoPlanche', name='chrono_planche'),
 
     url(r'^creation_planche/', 
         CreationPlanche.as_view() ,  
