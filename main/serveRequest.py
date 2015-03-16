@@ -6,8 +6,11 @@ Created on Nov 26, 2013
 '''
 
 from django.http import HttpResponse
-from models import Evenement, PlantBase, Planche, Variete
+
+from models import Evenement, PlantBase, Planche, TypeEvenement, Variete
 import sys
+import datetime
+FORMAT_DATE = "%d/%m/%Y"
 
 def serveRequest(request):
     """Received a request and return specific response"""
@@ -17,10 +20,9 @@ def serveRequest(request):
     print "cde =", cde
     if cde == "getEvtsPlant": 
         try:
-            id = int(request.POST.get("id", 0))
-            l_evts = Evenement.objects.filter(plant_base_id = id)
-            s_ = ','.join(['{"nom":"%s","date":"%s","type":"%s"}'%(   item.nom, 
-                                                                      item.date, 
+            l_evts = Evenement.objects.filter(plant_base_id = int(request.POST.get("id", 0)))
+            s_ = ','.join(['{"id":"%d","nom":"%s","date":"%s","type":"%s"}'%(   item.id, item.nom, 
+                                                                      item.date.strftime(FORMAT_DATE), 
                                                                       item.type) for item in l_evts])           
             s_json = '{"status":"true","l_evts":[%s]}'% s_
         except:
@@ -35,7 +37,7 @@ def serveRequest(request):
         print __name__, "sauve_plant", request.POST
 
         try:
-            id_plant = request.POST.get("id")
+            id_plant = request.POST.get("id_plant")
             if '_' in id_plant:
                 plant = PlantBase() ## un nouveau
             else:
@@ -49,23 +51,41 @@ def serveRequest(request):
             plant.coord_y_cm = int(request.POST.get("coord_y_cm",0))
             plant.planche = Planche.objects.get(num=int(request.POST.get("id_planche",0)))
             plant.save()
-            return HttpResponse('{"status":"true","id_plant":%d}'%plant.pk, content_type="application/json")
+            s_json = '{"status":"true","id_plant":%d}'%plant.pk
         except:
-            return HttpResponse('{"status":"false","err":%s}'%sys.exc_info()[1])
+            s_json = '{"status":"false","err":%s}'%sys.exc_info()[1]
+
+        return HttpResponse( s_json, content_type="application/json")
 
     
     ## --------------- request to update database 
     if cde == "ajoutEvt":
-        print "ajoutPlan request"
-        date = datetime.datetime.strptime(request.POST.get("date",""), "%d-%m-%Y")
-        evt = Evenement()
-        evt.nom = request.POST.get("nom","")
-        evt.date = date
-        evt.plan_en_place = request.POST.get("ref_plan","")
-        evt.date_creation = datetime.datetime.now()
-        
-        evt.save()
-        return HttpResponse("OK")
+        try:
+            evt = Evenement()
+            evt.nom = request.POST.get("nom","")
+            evt.date = datetime.datetime.strptime(request.POST.get("date",""), FORMAT_DATE)
+            evt.type = TypeEvenement.objects.get(nom=request.POST.get("type", ""))
+            evt.plant_base = PlantBase.objects.get(id=int(request.POST.get("id_plan", 0)))
+            evt.date_creation = datetime.datetime.now()
+            evt.save()
+            print evt
+            s_json = '{"status":"true"}'
+        except:
+            s_json = '{"status":"false","err":"%s"}'%sys.exc_info()[1]
+           
+        return HttpResponse(s_json)
+
+    ## --------------- request to update database 
+    if cde == "supprime_evenement":
+        try:
+            evt = Evenement.objects.get(id=int(request.POST.get("id", 0)))
+            print "will delete", evt
+            evt.delete()
+            s_json = '{"status":"true"}'
+        except:
+            s_json = '{"status":"false","err":"%s"}'%sys.exc_info()[1]
+           
+        return HttpResponse(s_json)
 
 
     print "No action engaged for", request.POST

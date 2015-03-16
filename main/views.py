@@ -72,7 +72,12 @@ def editionPlanche(request):
 
     num_planche = int(request.GET.get('num_planche', 1))
     l_vars = Variete.objects.all()
-    l_typesEvt = TypeEvenement.objects.all()
+    l_typesEvt = []
+    for et in TypeEvenement.objects.all():
+        l_typesEvt.append({"id":et.id, 
+                           "nom":et.nom, 
+                           "titre":Constant.d_TitresTypeEvt[et.nom]})
+
     planche = Planche.objects.get(num = num_planche)
     l_plants = PlantBase.objects.filter(planche = planche)
 

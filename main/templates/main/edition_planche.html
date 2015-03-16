@@ -10,19 +10,20 @@
 
 	<script>
 	
+
+function init()
+    {
     bEnMouvement = false
     pxParCm = 8
     plant_courant = ""
     g_tab_tickets = new Array()
     jsonVarietes = {  {% for var in l_vars %} {{var.id}}:'{{var.nom}}',{% endfor %}  }
-
-function init()
-    {
+    jsonTitreTypeEvt = {  {% for evtType in l_typesEvt %} '{{evtType.nom}}':'{{evtType.titre}}',{% endfor %}  }
     //retaillage de la matrice, on fait un carré
-
     document.getElementById("matrice").style.height = ({{planche.largeur_cm}} * pxParCm ).toString() + "px"
     document.getElementById("matrice").style.width = ({{planche.largeur_cm}} * pxParCm ).toString() + "px"
     affichePlants()
+
     }
 
 
@@ -36,8 +37,8 @@ function getTicket()
 function ajouteNouveauPlant()
     {
     s_nouveauPlanId = getTicket() + '_' 
-    s_plant = '<div class="plant" id="$ID_PLANT$" onmousedown="toggleMove(this)" onmouseup="toggleMove(this)" variete="" largeur_cm="" hauteur_cm="" \
-                coord_x_cm="" coord_y_cm="" nb_graines="" onclick="editePlan(this)" >'
+    s_plant = '<div class="plant" id="$ID_PLANT$" onmousedown="editePlant(this);toggleMove(this)" onmouseup="toggleMove(this)" \
+                variete="" largeur_cm="" hauteur_cm="" coord_x_cm="" coord_y_cm="" nb_graines="1" >'
     s_plant += '<span><div class="num_plant"> </div><div class="variete"> </div></span><br/>' 
     s_plant += '<div class="largeur_cm"> </div> <div class="hauteur_cm"> </div><br/>' 
     s_plant += '<div class="coord_x_cm"> </div> <div class="coord_y_cm"> </div><br/>' 
@@ -56,7 +57,7 @@ function supprimePlant(plant_id)
     document.getElementById('matrice').removeChild(document.getElementById(plant_id))
     }
 
-function editePlan(hPlant)
+function editePlant(hPlant)
     {
     // recup evenements liés à ce plant
     id_plant = hPlant.getAttribute("id")
@@ -70,24 +71,40 @@ function editePlan(hPlant)
         jsonRep = JSON.parse(rep)
         s_debut = ""
         s_fin = ""
-        s_evts = '<div class="listEvts">\n'
+        s_evts = '<ul class="listEvts">\n'
         if (jsonRep.status == 'true' )
             {
-            //alert('plant ' + jsonRep.l_evts )
+            //recuperation de tous les evenements, on met en avant le debut et fin
             for(ii=0;ii<jsonRep.l_evts.length;ii++)
                 {
-                if (jsonRep.l_evts[ii].type == "début")
-                    s_debut = "<p>Début :" + jsonRep.l_evts[ii].date + " " + jsonRep.l_evts[ii].nom + "</p>"  
-                else if (jsonRep.l_evts[ii].type == "fin")
-                    s_fin = "<p>Fin :" + jsonRep.l_evts[ii].date + " " + jsonRep.l_evts[ii].nom + "</p>"  
-                else
-                    s_evts +=  "<p>" + jsonRep.l_evts[ii].nom + " date :" + jsonRep.l_evts[ii].date + "</p>"
+                s_tag = ""
+                if (jsonRep.l_evts[ii].type == "debut")
+                    s_tag = jsonTitreTypeEvt["debut"] +  " "
+                if (jsonRep.l_evts[ii].type == "fin")
+                    s_tag = jsonTitreTypeEvt["fin"] +  " "
+                s_evts += "<li><b>" + s_tag +"</b> " + jsonRep.l_evts[ii].date + " "  + jsonRep.l_evts[ii].nom 
+                s_evts += "<a href='javascript:supprimeEvenement(" + jsonRep.l_evts[ii].id + ")'><img src='{{STATIC_URL}}images/toDelete.jpeg' title='Supprimer'></a></li>"
                 }
             }    
-        s_evts += s_debut + s_fin + "</div>\n"
+        s_evts += s_debut + s_fin + "</ul>\n"
 
         document.getElementById("editPlant_evts").innerHTML = s_evts
+
         }
+    // maj variété
+    id_variet  = hPlant.getAttribute("variete")
+    list = document.getElementById("editPlant_select_var").getElementsByTagName("option")
+    for(ii=0;ii<list.length;ii++)
+        if (list[ii].value == id_variet)
+            {
+            document.getElementById("editPlant_select_var").options[ii].selected=true
+            break
+            }
+    //maj nb de graines 
+    nbGr  = hPlant.getAttribute("nb_graines")
+    document.getElementById("editPlant_nb_graines").value = nbGr
+  
+    // maj num planche                   
     document.getElementById("editPlant_id_planche").innerHTML = {{planche.num}}
     document.getElementById("editPlant_plantId").innerHTML = id_plant
     document.getElementById("divEditPlan").style.display = "inline"
@@ -97,17 +114,17 @@ function sauvePlant()
     {
     // recup données et ajout à partir de l'id de plant de la fenetre d'edition
     id_plant = document.getElementById("editPlant_plantId").innerHTML
-    id_variet = document.getElementById("editPlant_select_var").value
 
     // on affecte les resultats de l'édition dans les attributs du div du plant + mise à jour affiche du plant
     list = document.getElementsByClassName("plant")
     for(ii=0;ii<list.length;ii++)
         if (list[ii].getAttribute("id") == id_plant)
             {
+            list[ii].setAttribute("variete", document.getElementById("editPlant_select_var").value)
+            list[ii].setAttribute("nb_graines", document.getElementById("editPlant_nb_graines").value)
             // mise à jour affichage 
-            list[ii].setAttribute("variete", id_variet)
-            //list[ii].getElementsByClassName("variete")[0].innerHTML = jsonVarietes[id_variet]
             affichePlant(list[ii])
+            break
             }
     }
 
@@ -137,17 +154,31 @@ function affichePlant(obj_plant)
      
 function ajouteEvenement()
     {
-	document.getElementById("divEditEvenement").style.display = "block"
+    document.getElementById("divEditEvenement").style.display = "block"
+    }
+     
+function supprimeEvenement(idEvent)
+    {
+    s_request = "cde=supprime_evenement&id=" + idEvent
+    rep = requestServer(s_request)
+    jsonRep = JSON.parse(rep)
+    if (jsonRep.status == 'false')
+        alert (jsonRep.err)
+    else
+        editePlant(document.getElementById("editPlant_plantId"))
     }
 
 function sauveEvenement()
     {
 	// recup données et ajout
-	date = document.getElementById("evt_date").value
-	nom = document.getElementById("evt_nom").value
-	pos_plant = document.getElementById("pos_plant").value
-	s_request = "cde=ajoutEvt&nom="+ nom + "&date=" + date
+	s_request = "cde=ajoutEvt&nom="+ document.getElementById("edit_evt_nom").value
+    s_request += "&date=" + document.getElementById("edit_evt_date").value
+    s_request += "&type=" + document.getElementById("edit_evt_select_type").value
+	s_request += "&id_plan=" + document.getElementById("editPlant_plantId").innerHTML
     rep = requestServer(s_request)
+    jsonRep = JSON.parse(rep)
+    if (jsonRep.status == 'false')
+        alert (jsonRep.err)
     }
 
 function sauveMatrice()
@@ -174,18 +205,18 @@ function sauveMatrice()
             continue
             }
             
-        s_request = "cde=sauve_plant&id="+ id_plant + "&id_planche=" + id_planche + "&variete=" + variete + "&largeur_cm="+ largeur_cm +"&hauteur_cm="+ hauteur_cm + "&coord_x_cm="+ coord_x_cm +"&coord_y_cm="+ coord_y_cm
+        s_request = "cde=sauve_plant&id_plant="+ id_plant + "&id_planche=" + id_planche + "&variete=" + variete + "&largeur_cm="+ largeur_cm +"&hauteur_cm="+ hauteur_cm 
+        s_request += "&coord_x_cm="+ coord_x_cm + "&coord_y_cm=" + coord_y_cm + "&nb_graines=" + nb_graines 
         rep = requestServer(s_request)
-        //alert('enegistrement' + list[pl].getAttribute("id") + " réponse = " +  rep)
         jsonRep = JSON.parse(rep)
         if (jsonRep.status == 'true' )
             {
+            //on affecte le nouveau numero di plan à partir de l'id en base
             list[pl].setAttribute("id", jsonRep.id_plant)
-            document.getElementById("divInfoDebug").innerHTML = list[pl].getAttribute("id")
-
             }
         }
     affichePlants()
+
     }
     
 
@@ -271,8 +302,9 @@ function deplace()
 <br/><br/>
 
 <div id="matrice">
+            {# plants existants en base #}
             {% for plant in l_plants %}
-            <div class="plant" id="{{plant.id}}" onmousedown="toggleMove(this)" onmouseup="toggleMove(this)" onclick="editePlan(this)"
+            <div class="plant" id="{{plant.id}}" onmousedown="editePlant(this);toggleMove(this)" onmouseup="toggleMove(this)"
             variete="{{plant.variete_id}}" largeur_cm="{{plant.largeur_cm}}" hauteur_cm="{{plant.hauteur_cm}}" coord_x_cm="{{plant.coord_x_cm}}" coord_y_cm="{{plant.coord_y_cm}}" nb_graines="{{plant.nb_graines}}" >
             <span><div class="num_plant"> </div><div class="variete"> </div></span><br/>
             <div class="largeur_cm"> </div> <div class="hauteur_cm"> </div><br/> 
@@ -285,13 +317,13 @@ function deplace()
 	<h2>Gestion du plant <span id="editPlant_plantId"> </span></h2>
 	<p>Sur la planche N° <span id="editPlant_id_planche"> </span></p>
     Variété : 
-    <select id="editPlant_select_var" name="Variete">
+    <select id="editPlant_select_var">
     	    {% for var in l_vars %}
     	    <option value="{{var.id}}" name="{{var.nom}}">{{var.nom}}</option>
     	    {% endfor %}
 	</select>
-    <br/>Nb graines : <input type="text" name="editPlant_nb_graines" value="1">
-    <br/><br/><b>Evenements</b><br/><span id="editPlant_evts"> </span>
+    <br/>Nb graines : <input type="text" id="editPlant_nb_graines" value="1">
+    <br/><br/><b>Evenements</b><div id="editPlant_evts"> </div>
     <br/>
     <input type='button' value='Sauver le plant' name='sauver' onclick="sauvePlant()"/><br/>                   
     <input type='button' value='Ajouter un évènement' name='ajout' onclick="ajouteEvenement()"/><br/>
@@ -299,22 +331,26 @@ function deplace()
     <input type='button' value='Supprimer le plant' name='supprime' onclick="supprimePlant(document.getElementById('editPlant_plantId').innerHTML)"/><br/>
 </div>
 
+
 <div class="YellowFrame" style="display: none" id="divEditEvenement">
-	<p>
+    
 		<h2>Gestion d'évenement</h2>
+		
 		<table>
-		<tr><td>Type :
+		<tr><td>Type : <select id="edit_evt_select_type">
 		              {% for typeEvt in l_typesEvt %}  
-		              {{typeEvt.nom}}<input type="checkbox" name="{{typeEvt.nom}}" value="{{typeEvt.nom}}">
-		              {% endfor %}
+                      <option value="{{typeEvt.nom}}">{{typeEvt.titre}}</option>
+                      {% endfor %}
+                      </select>
+
 		</td></tr>
-        <tr><td>Nom : <input type='text' value='' id='evt_nom'/></td></tr>
-		<tr><td>Date : (jj-mm-aaaa): <input type='text' value='' id='evt_date'/></td></tr>
+        <tr><td>Nom : <input type='text' value='' id='edit_evt_nom'/></td></tr>
+		<tr><td>Date : (jj/mm/aaaa): <input type='text' value='' id='edit_evt_date'/></td></tr>
 		<tr><td><input type='button' value='Cancel' name='sauver' onclick="document.getElementById('divEditEvenement').style.display = 'none'" />
-		        <input type='button' value='OK' name='sauver' onclick="sauveEvenement()" />
+		        <input type='button' value='Sauver' name='sauver' onclick="sauveEvenement()" />
 		</td></tr>
         </table>
-	</p>
+        
 </div>
 
 

@@ -66,6 +66,7 @@ function colorScores()
 
 function getValueOfTagName(root, tagName, attrName)
 	{
+	// get value of <tagName name="attrName" value"the value that will be returned"
 	if (root == null)
 		l_elts = document.getElementsByTagName(tagName)
 	else
@@ -79,6 +80,26 @@ function getValueOfTagName(root, tagName, attrName)
 
 	return ("")
 	}
+	
+
+
+
+function setValueOfTagName(root, tagName, attrName, value)
+	{
+	// set value of <tagName name="attrName" value"the value that will be set"
+	if (root == null)
+		l_elts = document.getElementsByTagName(tagName)
+	else
+		l_elts = root.getElementsByTagName(tagName)
+
+		
+	// set the first attribute value of tag name element
+	for(ii=0; ii < l_elts.length; ii++)
+		if (l_elts[ii]["name"] == attrName)
+			l_elts[ii]["value"] = value
+
+	}
+	
 	
 function requestServer(param)
 	{

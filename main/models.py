@@ -65,7 +65,7 @@ class PlantBase(models.Model):
                                                                 self.planche.num)
 
 class TypeEvenement(models.Model):
-    nom = models.CharField(max_length=100)
+    nom = models.CharField(max_length=20)
     def __unicode__(self):
         return self.nom
     

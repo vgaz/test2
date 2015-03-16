@@ -3,6 +3,8 @@
 from django.core.management.base import BaseCommand       
 from main.models import Famille, Variete, TypeEvenement
 import csv
+from main.Constant import d_TitresTypeEvt
+
 
 class Command(BaseCommand):
     """updateDB command"""
@@ -12,7 +14,7 @@ class Command(BaseCommand):
         
         ## maj type d'évenement
         l_typeEvt = [unicode(t) for t in TypeEvenement.objects.all().values_list("nom", flat=True)]
-        for n in ("début", "fin", 'autre'):
+        for n in d_TitresTypeEvt.keys():
             if n not in l_typeEvt:
                 hTE = TypeEvenement()
                 hTE.nom = n
