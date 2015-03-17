@@ -12,37 +12,49 @@ function init()
     
     jsonVarietes = {  {% for var in l_vars %} {{var.id}}:'{{var.nom}}',{% endfor %}  }
     jsonTitreTypeEvt = {  {% for evtType in l_typesEvt %} '{{evtType.nom}}':'{{evtType.titre}}',{% endfor %}  }
-    //retaillage de la matrice, on fait un carré
-    document.getElementById("matrice").style.height = ({{planche.largeur_cm}} * pxParCm ).toString() + "px"
-    document.getElementById("matrice").style.width = "100%"
-
+    
+    pxParJ = 10
+    
     }
 </script>
+<style>
+
+.chrono_plant
+    {
+    width: 30%;
+    height: 50px;
+    background: white;
+    color: black;
+    border-color: yellow;
+    border: 5px solid green;
+    }
+</style>
 {% endblock %}
 
-{% block title %}Suivi de la planche dans le temps. planche {{planche.num}} ({{planche.largeur_cm}}cm x {{planche.longueur_m}}m) {% endblock %}
+{% block title %}Suivi dans le temps de la planche {{planche.num}} ({{planche.largeur_cm}} cm x {{planche.longueur_m}} m) {% endblock %}
 
 {% block content %}
 {% csrf_token %}
 
-<div id="main" onmousemove="majXYMouse(event);deplace();" style="width: 90%; border:2px solid #08252E;">
+<div id="main" onmousemove="majXYMouse(event);deplace();" style="text-align: center" >
 Visionnage du <input type="texte" name="date_debut" value="{{date_debut}}"> au <input type="texte" name="date_fin" value="{{date_fin}}">
 
 
 <span id="divInfoDebug" ></span>
 <br/><br/>
 
-<div id="matrice">
+    <div id="cadre_chrono">
+    
             {# plants existants en base #}
             {% for plant in l_plants %}
-            <div class="plant" id="{{plant.id}}" onmousedown="editePlant(this);toggleMove(this)" onmouseup="toggleMove(this)"
-            variete="{{plant.variete_id}}" largeur_cm="{{plant.largeur_cm}}" hauteur_cm="{{plant.hauteur_cm}}" coord_x_cm="{{plant.coord_x_cm}}" coord_y_cm="{{plant.coord_y_cm}}" nb_graines="{{plant.nb_graines}}" >
-            <span><div class="num_plant"> </div><div class="variete"> </div></span><br/>
-            <div class="largeur_cm"> </div> <div class="hauteur_cm"> </div><br/> 
-            <div class="coord_x_cm"> </div> <div class="coord_y_cm"> </div><br/>
+            <div class="chrono_plant" id="{{plant.id}}" onmousedown="editePlant(this);toggleMove(this)" onmouseup="toggleMove(this)"
+            variete="{{plant.variete_id}}" debut="{{plant.debut}}" fin="{{plant.fin}}" >
+            <span><div class="num_plant">{{plant.id}}</div><div class="variete">{{plant.variete}}</div>
+            <div class="plant_debut">{{plant.debut}}</div><div class="plant_fin">{{plant.fin}}</div></span>
             </div>
             {% endfor %}
+            
+    </div>
 </div>
-
 
 {% endblock %}
