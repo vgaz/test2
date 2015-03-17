@@ -181,6 +181,8 @@ function sauveEvenement()
 
 function sauveMatrice()
     {
+    //sauve plant edité
+    sauvePlant()
     // recup données et envoi plant par plant
     id_planche = {{planche.num}}
     list = document.getElementsByClassName("plant")
@@ -211,7 +213,11 @@ function sauveMatrice()
             {
             //on affecte le nouveau numero di plan à partir de l'id en base
             list[pl].setAttribute("id", jsonRep.id_plant)
+            document.getElementById("divInfoDebug").innerHTML = "plant sauvé"
+
             }
+        else
+            document.getElementById("divInfoDebug").innerHTML = "<div class='err_msg'>"+ jsonRep.err + "</div>"
         }
     affichePlants()
 

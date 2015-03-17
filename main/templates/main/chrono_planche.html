@@ -9,6 +9,7 @@
 function init()
     {
     pxParCm = 8
+    
     jsonVarietes = {  {% for var in l_vars %} {{var.id}}:'{{var.nom}}',{% endfor %}  }
     jsonTitreTypeEvt = {  {% for evtType in l_typesEvt %} '{{evtType.nom}}':'{{evtType.titre}}',{% endfor %}  }
     //retaillage de la matrice, on fait un carré
@@ -24,10 +25,9 @@ function init()
 {% block content %}
 {% csrf_token %}
 
-<div id="main" onmousemove="majXYMouse(event);deplace();" style="width: 80%">
-<input type="button" onclick="ajouteNouveauPlant()" value="Ajout d'un plant">
-&nbsp;
-<input type="button" onclick="sauveMatrice()" value="Sauvegarder tous les plants">
+<div id="main" onmousemove="majXYMouse(event);deplace();" style="width: 90%; border:2px solid #08252E;">
+Visionnage du <input type="texte" name="date_debut" value="{{date_debut}}"> au <input type="texte" name="date_fin" value="{{date_fin}}">
+
 
 <span id="divInfoDebug" ></span>
 <br/><br/>
