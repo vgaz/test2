@@ -2,19 +2,37 @@
 
 {% block javascript %}
     <script type="text/javascript" src="{{ STATIC_URL }}javascripts/myTools.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/moment-with-locales.min.js"></script>
 
-<script>
-	
-
-function init()
-    {
+    <script type="text/javascript">
     pxParCm = 8
-    
+    pxParJ = 10    
     jsonVarietes = {  {% for var in l_vars %} {{var.id}}:'{{var.nom}}',{% endfor %}  }
     jsonTitreTypeEvt = {  {% for evtType in l_typesEvt %} '{{evtType.nom}}':'{{evtType.titre}}',{% endfor %}  }
+    NomEvtDeId = {  {% for evtType in l_typesEvt %} '{{evtType.id}}':'{{evtType.nom}}',{% endfor %}  }
     
-    pxParJ = 10
+    jsonEvts = '{"evts":[{% for evt in l_evts %}\
+                {"id":"{{evt.id}}","nom":"{{evt.nom}}","date":"{{evt.date}}","type":"{{evt.type}}","id_plant":"{{evt.plant_base_id}}"}{% if not forloop.last %},{% endif %}\
+                {% endfor %}]}'
+
+function     balisagePlants()
+{
+
+}	
+
+function    init()
+    {
+    hJsonEvts = JSON.parse(jsonEvts)
+
+    balisagePlants()
+    }
     
+function  balisagePlants()
+    {
+    s_info = ""
+    for (ii=0;ii<hJsonEvts.evts.length;ii++)
+        s_info += hJsonEvts.evts[ii].type + " " + hJsonEvts.evts[ii].date +  " date " + moment(hJsonEvts.evts[ii].date) + '<br/>'
+    document.getElementById("divInfoDebug").innerHTML = s_info
     }
 </script>
 <style>
@@ -35,12 +53,11 @@ function init()
 
 {% block content %}
 {% csrf_token %}
-
-<div id="main" onmousemove="majXYMouse(event);deplace();" style="text-align: center" >
+<p id="divInfoDebug" ></p>
+<div id="main" style="text-align: center" >
 Visionnage du <input type="texte" name="date_debut" value="{{date_debut}}"> au <input type="texte" name="date_fin" value="{{date_fin}}">
 
 
-<span id="divInfoDebug" ></span>
 <br/><br/>
 
     <div id="cadre_chrono">

@@ -67,14 +67,13 @@ function editePlant(hPlant)
         // recup evts
         s_request = "cde=getEvtsPlant&id="+ id_plant
         rep = requestServer(s_request)	
-    
         jsonRep = JSON.parse(rep)
         s_debut = ""
         s_fin = ""
         s_evts = '<ul class="listEvts">\n'
         if (jsonRep.status == 'true' )
             {
-            //recuperation de tous les evenements, on met en avant le debut et fin
+            //recuperation de tous les evenements, on met en gras le debut et fin
             for(ii=0;ii<jsonRep.l_evts.length;ii++)
                 {
                 s_tag = ""
@@ -312,19 +311,24 @@ function deplace()
 </div>
 
 <div id="divEditPlan" style="display: none" class="BlueFrame">
+	
 	<h2>Gestion du plant <span id="editPlant_plantId"> </span></h2>
+	
 	<p>Sur la planche N° <span id="editPlant_id_planche"> </span></p>
-    Variété : 
-    <select id="editPlant_select_var">
-    	    {% for var in l_vars %}
-    	    <option value="{{var.id}}" name="{{var.nom}}">{{var.nom}}</option>
-    	    {% endfor %}
-	</select>
+    
+    Variété : <select id="editPlant_select_var">{% for var in l_vars %}
+    	           <option value="{{var.id}}" name="{{var.nom}}">{{var.nom}}</option>
+    	    {% endfor %}</select>
+    
     <br/>Nb graines : <input type="text" id="editPlant_nb_graines" value="1">
+    
     <br/><br/><b>Evenements</b><div id="editPlant_evts"> </div>
+    
     <br/>
+    
     <input type='button' value='Sauver le plant' name='sauver' onclick="sauvePlant()"/><br/>                   
     <input type='button' value='Ajouter un évènement' name='ajout' onclick="ajouteEvenement()"/><br/>
+    
     <hr/>
     <input type='button' value='Supprimer le plant' name='supprime' onclick="supprimePlant(document.getElementById('editPlant_plantId').innerHTML)"/><br/>
 </div>

@@ -7,12 +7,13 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from models import Variete, Famille
 from django.template.defaultfilters import random
+from django.core import serializers
 
 import forms
 from django.contrib.messages.storage.base import Message
 
 import Constant
-from models import Planche, PlantBase, TypeEvenement
+from models import Evenement, Planche, PlantBase, TypeEvenement
 from forms import PlancheForm
 
 #################################################
@@ -31,7 +32,6 @@ def home(request):
 
 def chronoPlanche(request):
 
-
     l_vars = Variete.objects.all()
     l_typesEvt = []
     for et in TypeEvenement.objects.all():
@@ -41,6 +41,7 @@ def chronoPlanche(request):
 
     planche = Planche.objects.get(num = int(request.GET.get('num_planche', 1)))
     l_plants = PlantBase.objects.filter(planche = planche)
+    l_evts = Evenement.objects.filter(plant_base__in = l_plants)
 
     return render(request,
                  'main/chrono_planche.html',
@@ -48,7 +49,9 @@ def chronoPlanche(request):
                   "appVersion":Constant.APP_VERSION,
                   "planche": planche,
                   "l_typesEvt":l_typesEvt,
-                  "l_plants":l_plants
+                  "l_plants":l_plants,
+                  "l_evts": l_evts
+
                   })
 #################################################
 

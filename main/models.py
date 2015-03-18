@@ -74,11 +74,12 @@ class Evenement(models.Model):
     plant_base = models.ForeignKey(PlantBase)
     date_creation = models.DateTimeField(default=datetime.datetime.now())
     date = models.DateTimeField()
+   
     nom = models.CharField(max_length=100, default="")
     texte = models.TextField(default="")
     bFini = models.BooleanField(default=False)
     type =  models.ForeignKey(TypeEvenement)
-    
+
     class Meta: 
         ordering = ['date']
         
