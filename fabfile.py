@@ -23,6 +23,11 @@ def updateDB():
     print "running updateDB"
     local("python manage.py updateDB")
 
+ 
+def sauveTables():
+    """sauveTables"""
+    local("python manage.py updateDB")
+
 def apache_start():
     """start apache server """
     local("sudo service apache2 start")
