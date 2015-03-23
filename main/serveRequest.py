@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from models import Evenement, PlantBase, Planche, TypeEvenement, Variete
 import sys
 import datetime
-FORMAT_DATE = "%d/%m/%Y"
+import Constant
 
 def serveRequest(request):
     """Received a request and return specific response"""
@@ -22,7 +22,7 @@ def serveRequest(request):
         try:
             l_evts = Evenement.objects.filter(plant_base_id = int(request.POST.get("id", 0)))
             s_ = ','.join(['{"id":"%d","nom":"%s","date":"%s","type":"%s"}'%(   item.id, item.nom, 
-                                                                      item.date.strftime(FORMAT_DATE), 
+                                                                      item.date.strftime(Constant.FORMAT_DATE), 
                                                                       item.type) for item in l_evts])           
             s_json = '{"status":"true","l_evts":[%s]}'% s_
         except:
@@ -63,7 +63,7 @@ def serveRequest(request):
         try:
             evt = Evenement()
             evt.nom = request.POST.get("nom","")
-            evt.date = datetime.datetime.strptime(request.POST.get("date",""), FORMAT_DATE)
+            evt.date = datetime.datetime.strptime(request.POST.get("date",""), Constant.FORMAT_DATE)
             evt.type = TypeEvenement.objects.get(nom=request.POST.get("type", ""))
             evt.plant_base = PlantBase.objects.get(id=int(request.POST.get("id_plan", 0)))
             evt.date_creation = datetime.datetime.now()

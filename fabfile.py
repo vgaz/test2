@@ -26,7 +26,7 @@ def updateDB():
  
 def sauveTables():
     """sauveTables"""
-    local("python manage.py updateDB")
+    local("python manage.py dumpdata > ./tables.json")
 
 def apache_start():
     """start apache server """

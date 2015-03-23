@@ -9,3 +9,5 @@ APP_NAME = "MARAICH"
 APP_VERSION = "1.0.1"
 
 d_TitresTypeEvt = {"debut":"début", "fin":"fin", "autre":"autre"}
+
+FORMAT_DATE = "%d/%m/%Y"
