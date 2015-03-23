@@ -8,9 +8,9 @@ from django.contrib.auth.decorators import login_required
 from models import Variete, Famille
 from django.template.defaultfilters import random
 from django.core import serializers
-
 import forms
 from django.contrib.messages.storage.base import Message
+import datetime
 
 import Constant
 from models import Evenement, Planche, PlantBase, TypeEvenement
@@ -43,8 +43,8 @@ def chronoPlanche(request):
     l_plants = PlantBase.objects.filter(planche = planche)
     l_evts = Evenement.objects.filter(plant_base__in = l_plants)
     if request.GET:
-        date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue",""), Constant.FORMAT_DATE)
-        date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue",""), Constant.FORMAT_DATE)
+        date_debut_vue = datetime.datetime.strptime(request.GET.get("date_debut_vue",""), Constant.FORMAT_DATE)
+        date_fin_vue = datetime.datetime.strptime(request.GET.get("date_fin_vue",""), Constant.FORMAT_DATE)
         
     return render(request,
                  'main/chrono_planche.html',
