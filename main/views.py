@@ -35,14 +35,17 @@ def chronoPlanche(request):
     l_vars = Variete.objects.all()
     l_typesEvt = []
     for et in TypeEvenement.objects.all():
-        l_typesEvt.append({"id":et.id, 
-                           "nom":et.nom, 
-                           "titre":Constant.d_TitresTypeEvt[et.nom]})
+        l_typesEvt.append({"id" : et.id, 
+                           "nom" : et.nom, 
+                           "titre" : Constant.d_TitresTypeEvt[et.nom]})
 
     planche = Planche.objects.get(num = int(request.GET.get('num_planche', 1)))
     l_plants = PlantBase.objects.filter(planche = planche)
     l_evts = Evenement.objects.filter(plant_base__in = l_plants)
-
+    if request.GET:
+        date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue",""), Constant.FORMAT_DATE)
+        date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue",""), Constant.FORMAT_DATE)
+        
     return render(request,
                  'main/chrono_planche.html',
                  {
@@ -50,7 +53,9 @@ def chronoPlanche(request):
                   "planche": planche,
                   "l_typesEvt":l_typesEvt,
                   "l_plants":l_plants,
-                  "l_evts": l_evts
+                  "l_evts": l_evts,
+                  "date_debut_vue": date_debut_vue,
+                  "date_fin_vue": date_fin_vue
 
                   })
 #################################################
