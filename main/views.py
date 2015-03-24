@@ -32,21 +32,25 @@ def home(request):
 
 def chronoPlanche(request):
 
-    l_vars = Variete.objects.all()
-    l_typesEvt = []
-    for et in TypeEvenement.objects.all():
-        l_typesEvt.append({"id" : et.id, 
-                           "nom" : et.nom, 
-                           "titre" : Constant.d_TitresTypeEvt[et.nom]})
-
-    planche = Planche.objects.get(num = int(request.GET.get('num_planche', 1)))
-    l_plants = PlantBase.objects.filter(planche = planche)
-    l_evts = Evenement.objects.filter(plant_base__in = l_plants)
-    if request.GET:
+    planche = Planche.objects.get(num = int(request.GET.get("num_planche", 1)))
+    
+    if request.GET.get("date_debut_vue",""):
         date_debut_vue = datetime.datetime.strptime(request.GET.get("date_debut_vue",""), Constant.FORMAT_DATE)
         date_fin_vue = datetime.datetime.strptime(request.GET.get("date_fin_vue",""), Constant.FORMAT_DATE)
-
+    else:
+        now = datetime.datetime.now()
+        delta = datetime.timedelta(days=60)
+        date_debut_vue = now - delta
+        date_fin_vue = now + delta
         
+    l_typesEvt = TypeEvenement.objects.all()
+    
+    ## on prend tous les evts de l'encadrement
+    l_evts = Evenement.objects.filter(date__gte = date_debut_vue, date__lte = date_fin_vue)
+    ## on en deduit les plants impliqués, même partiellement
+    l_plantsId = list(set([evt.plant_base_id for evt in l_evts]))
+    l_plants = PlantBase.objects.filter(planche = planche, id__in = l_plantsId )
+
     return render(request,
                  'main/chrono_planche.html',
                  {
