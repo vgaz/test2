@@ -45,6 +45,7 @@ def chronoPlanche(request):
     if request.GET:
         date_debut_vue = datetime.datetime.strptime(request.GET.get("date_debut_vue",""), Constant.FORMAT_DATE)
         date_fin_vue = datetime.datetime.strptime(request.GET.get("date_fin_vue",""), Constant.FORMAT_DATE)
+
         
     return render(request,
                  'main/chrono_planche.html',

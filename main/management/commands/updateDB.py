@@ -32,7 +32,7 @@ class Command(BaseCommand):
                 hTE.nom = n
                 hTE.save()
         
-        reader = csv.DictReader(open("famillesLegumes.csv", "rb"))
+        reader = csv.DictReader(file("famillesLegumes.csv", "rb"))
         
         ## build family and variety tables        
         for l in reader:
