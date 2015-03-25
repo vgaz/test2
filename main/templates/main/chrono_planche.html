@@ -56,8 +56,9 @@ function  balisagePlants()
 
 <div id="main" style="text-align: center" >
 
-<form action="chrono_planche_submit" method="get" accept-charset="utf-8">
-Visionnage du <input type="text" name="date_debut" value="{{date_debut_vue|safe}}" /> au <input type="text" name="date_fin" value="{{date_fin_vue|safe}}" />
+<form action="" method="POST" accept-charset="utf-8">
+{% csrf_token %}
+Visionnage du <input type="text" name="date_debut_vue" value="{{date_debut_vue|date:'d/m/Y'}}" /> au <input type="text" name="date_fin_vue" value="{{date_fin_vue|date:'d/m/Y'}}" />
 <input type="hidden" name="num_planche" value="{{planche.num}}" />
 <input style="margin-left: 20px" type="submit" value="Envoyer"/>
 </form>

@@ -32,11 +32,14 @@ def home(request):
 
 def chronoPlanche(request):
 
-    planche = Planche.objects.get(num = int(request.GET.get("num_planche", 1)))
+
+    planche = Planche.objects.get(num = int(request.GET.get("num_planche", request.POST.get("num_planche", 0))))
+    print  planche
     
-    if request.GET.get("date_debut_vue",""):
-        date_debut_vue = datetime.datetime.strptime(request.GET.get("date_debut_vue",""), Constant.FORMAT_DATE)
-        date_fin_vue = datetime.datetime.strptime(request.GET.get("date_fin_vue",""), Constant.FORMAT_DATE)
+    if request.POST.get("date_debut_vue",""):
+        date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue", ""), Constant.FORMAT_DATE)
+        date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue", ""), Constant.FORMAT_DATE)
+        print date_debut_vue, date_fin_vue
     else:
         now = datetime.datetime.now()
         delta = datetime.timedelta(days=60)
