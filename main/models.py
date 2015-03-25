@@ -84,5 +84,5 @@ class Evenement(models.Model):
         ordering = ['date']
         
     def __unicode__(self):
-        return self.nom
+        return "%d %s %s"%(self.plant_base_id, self.date, self.type)
     

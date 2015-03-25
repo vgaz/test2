@@ -185,6 +185,7 @@ function sauveMatrice()
     // recup données et envoi plant par plant
     id_planche = {{planche.num}}
     list = document.getElementsByClassName("plant")
+    s_msg = ""
     for(pl=0; pl<list.length; pl++)
         {
         id_plant = list[pl].getAttribute("id")
@@ -212,14 +213,13 @@ function sauveMatrice()
             {
             //on affecte le nouveau numero di plan à partir de l'id en base
             list[pl].setAttribute("id", jsonRep.id_plant)
-            document.getElementById("divInfoDebug").innerHTML = "plant sauvé"
-
+            s_msg += " plant " + id_plant
             }
         else
             document.getElementById("divInfoDebug").innerHTML = "<div class='err_msg'>"+ jsonRep.err + "</div>"
         }
     affichePlants()
-
+    document.getElementById("divInfoDebug").innerHTML = s_msg + ", sauvés"
     }
 
 function majXYMouse(event) 
@@ -288,7 +288,12 @@ function deplace()
 {% block title %}Définition de la matrice de la planche {{planche.num}} ({{planche.largeur_cm}}cm x {{planche.longueur_m}}m) {% endblock %}
 
 {% block content %}
+<form action="" method="POST" accept-charset="utf-8">
 {% csrf_token %}
+Date <input type="text" name="date" value="{{date|date:'d/m/Y'}}" />
+<input type="hidden" name="num_planche" value="{{planche.num}}" />
+<input style="margin-left: 20px" type="submit" value="Envoyer" />
+</form><br/>
 
 <div id="main" onmousemove="majXYMouse(event);deplace();" style="width: 80%">
 <input type="button" onclick="ajouteNouveauPlant()" value="Ajout d'un plant">

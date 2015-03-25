@@ -52,14 +52,18 @@ def chronoPlanche(request):
     l_evts = Evenement.objects.filter(date__gte = date_debut_vue, date__lte = date_fin_vue)
     ## on en deduit les plants impliqués, même partiellement
     l_plantsId = list(set([evt.plant_base_id for evt in l_evts]))
+    ## on recupère de nouveau tous les évenements des plants impactés , même ceux hors fenetre temporelle
+    l_evts = Evenement.objects.filter(plant_base_id__in = l_plantsId).order_by('plant_base_id', 'date')
     l_plants = PlantBase.objects.filter(planche = planche, id__in = l_plantsId )
 
     return render(request,
                  'main/chrono_planche.html',
                  {
                   "appVersion":Constant.APP_VERSION,
+                  "appName":Constant.APP_NAME,
                   "planche": planche,
                   "l_typesEvt":l_typesEvt,
+                  "d_TitresTypeEvt": Constant.d_TitresTypeEvt,
                   "l_plants":l_plants,
                   "l_evts": l_evts,
                   "date_debut_vue": date_debut_vue,
@@ -97,15 +101,26 @@ class CreationPlanche(CreateView):
 
 def editionPlanche(request):
 
+    planche = Planche.objects.get(num = int(request.GET.get('num_planche', 1)))
+    s_date = request.POST.get("date", "")
+    if s_date:
+        dateVue = datetime.datetime.strptime(s_date, Constant.FORMAT_DATE)
+    else:
+        dateVue = datetime.datetime.now()
     l_vars = Variete.objects.all()
     l_typesEvt = []
     for et in TypeEvenement.objects.all():
         l_typesEvt.append({"id":et.id, 
                            "nom":et.nom, 
                            "titre":Constant.d_TitresTypeEvt[et.nom]})
+    ## filtrage par date
+    l_evts = l_evts.filter(date__gte = dateVue)XXXXXXXc'est ici'
+    for ev in l_evts: print "F ", ev
+    l_evts = Evenement.objects.filter(type = TypeEvenement.objects.get(nom = "debut"), date__lte = dateVue)
 
-    planche = Planche.objects.get(num = int(request.GET.get('num_planche', 1)))
-    l_plants = PlantBase.objects.filter(planche = planche)
+    l_PlantsIds = l_evts.values_list('plant_base_id', flat=True)
+    print l_PlantsIds
+    l_plants = PlantBase.objects.filter(planche = planche, id__in = l_PlantsIds)
 
     return render(request,
                  'main/edition_planche.html',
@@ -114,7 +129,8 @@ def editionPlanche(request):
                   "planche": planche,
                   "l_vars":l_vars,
                   "l_typesEvt":l_typesEvt,
-                  "l_plants":l_plants
+                  "l_plants":l_plants,
+                  "date":dateVue
                   })
 
 #################################################

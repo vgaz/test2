@@ -1,39 +1,7 @@
 {% extends "base.html" %}
 
 {% block javascript %}
-    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/myTools.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/moment-with-locales.min.js"></script>
 
-    <script type="text/javascript">
-    pxParCm = 8
-    pxParJ = 10    
-    TitreEvtDeNom = {  {% for evtType in l_typesEvt %} '{{evtType.nom}}':'{{evtType.titre}}',{% endfor %}  }
-    NomEvtDeId = {  {% for evtType in l_typesEvt %} '{{evtType.id}}':'{{evtType.nom}}',{% endfor %}  }
-    
-    jsonEvts = '{"evts":[{% for evt in l_evts %}\
-                {"id":"{{evt.id}}","nom":"{{evt.nom}}","date":"{{evt.date}}","type":"{{evt.type}}","id_plant":"{{evt.plant_base_id}}"}{% if not forloop.last %},{% endif %}\
-                {% endfor %}]}'
-
-function     balisagePlants()
-{
-
-}	
-
-function    init()
-    {
-    hJsonEvts = JSON.parse(jsonEvts)
-
-    balisagePlants()
-    }
-    
-function  balisagePlants()
-    {
-    s_info = ""
-    for (ii=0;ii<hJsonEvts.evts.length;ii++)
-        s_info += hJsonEvts.evts[ii].id_plant + " " + hJsonEvts.evts[ii].type + " " + hJsonEvts.evts[ii].date +  " date " + moment(hJsonEvts.evts[ii].date) + '<br/>'
-    document.getElementById("divInfoDebug").innerHTML = s_info
-    }
-</script>
 <style>
 
 .chrono_plant
@@ -46,6 +14,77 @@ function  balisagePlants()
     border: 5px solid green;
     }
 </style>
+
+
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/myTools.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}javascripts/moment-with-locales.min.js"></script>
+
+    <script type="text/javascript">
+    
+    s_info = ""
+    pxParCm = 8
+    date_debut_vue = "{{date_debut_vue|safe}}"
+    date_fin_vue = "{{date_fin_vue|safe}}"
+    TitreEvtDeNom = {{d_TitresTypeEvt|safe}}
+    NomEvtDeId = {  {% for evtType in l_typesEvt %} '{{evtType.id}}':'{{evtType.nom}}',{% endfor %}  }
+    
+    jsonEvts = '{"evts":[{% for evt in l_evts %}\
+                {"id":"{{evt.id}}","nom":"{{evt.nom}}","date":"{{evt.date|safe}}","type":"{{evt.type}}","id_plant":"{{evt.plant_base_id}}"}{% if not forloop.last %},{% endif %}\
+                {% endfor %}]}'	
+
+function    init()
+    {
+    pxParJ = parseInt(window.getComputedStyle(document.getElementById("cadre_chrono")).width.split('px')[0]) / moment(date_fin_vue).diff(moment(date_debut_vue), 'days')
+
+
+    hJsonEvts = JSON.parse(jsonEvts)
+    EvtsDePlant = {}
+    for (ii=0;ii<hJsonEvts.evts.length;ii++)
+        {
+        s_info += hJsonEvts.evts[ii].id_plant + " " + hJsonEvts.evts[ii].type + " " + hJsonEvts.evts[ii].date + '<br/>'
+        if (EvtsDePlant[hJsonEvts.evts[ii].id_plant] == null)
+            EvtsDePlant[hJsonEvts.evts[ii].id_plant] = new Array()
+        EvtsDePlant[hJsonEvts.evts[ii].id_plant].push(hJsonEvts.evts[ii].id)
+        }
+
+    document.getElementById("divInfoDebug").innerHTML = s_info
+    balisagePlants()
+    }
+    
+function  balisagePlants()
+    {
+    for (pl in EvtsDePlant)
+        {
+        debut = "" 
+        fin = ""
+        for (ii=0;ii<hJsonEvts.evts.length;ii++)
+            {
+            // on balaye plant par plant car les evt sont ordonnés par id_plant
+            
+            if (hJsonEvts.evts[ii].id_plant == pl)
+                {
+                if (hJsonEvts.evts[ii].type == 'debut')
+                    {
+                    debut = hJsonEvts.evts[ii].date
+                    deltaDebut = moment(hJsonEvts.evts[ii].date).diff(moment(date_debut_vue), 'days')
+                    //alert ("Début plant " + hJsonEvts.evts[ii].id_plant + " = " +  delta )
+                    // decalage debut
+                    document.getElementById(hJsonEvts.evts[ii].id_plant).style.marginLeft = deltaDebut * pxParJ + "px" 
+                    }
+                if (hJsonEvts.evts[ii].type == 'fin')
+                    {
+                    fin = hJsonEvts.evts[ii].date
+                    delta = moment(hJsonEvts.evts[ii].date).diff(moment(debut), 'days')
+                    // largeur = 
+                    document.getElementById(hJsonEvts.evts[ii].id_plant).style.width = (deltaDebut + delta * pxParJ ) + "px" 
+                    }
+
+                }
+            }
+        }
+    }
+</script>
+
 {% endblock %}
 
 {% block title %}Suivi dans le temps de la planche {{planche.num}} ({{planche.largeur_cm}} cm x {{planche.longueur_m}} m) {% endblock %}
