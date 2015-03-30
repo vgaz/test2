@@ -7,7 +7,7 @@
 .chrono_plant
     {
     width: 30%;
-    height: 50px;
+    height: 60px;
     background: white;
     color: black;
     border-color: yellow;
@@ -22,7 +22,6 @@
     <script type="text/javascript">
     
     s_info = ""
-    pxParCm = 8
     date_debut_vue = "{{date_debut_vue|safe}}"
     date_fin_vue = "{{date_fin_vue|safe}}"
     TitreEvtDeNom = {{d_TitresTypeEvt|safe}}
@@ -34,9 +33,11 @@
 
 function    init()
     {
-    pxParJ = parseInt(window.getComputedStyle(document.getElementById("cadre_chrono")).width.split('px')[0]) / moment(date_fin_vue).diff(moment(date_debut_vue), 'days')
+    // nb px par jour en fonction des bornes , on ajoute 1 pour inclure le dernier jour plein 
+    pxParJ = window.getComputedStyle(document.getElementById("cadre_chrono")).width.split('px')[0] / (moment(date_fin_vue).diff(moment(date_debut_vue), 'days') +1)
+    
 
-
+    // creation d'une liste d'evts pour chaque id_plant
     hJsonEvts = JSON.parse(jsonEvts)
     EvtsDePlant = {}
     for (ii=0;ii<hJsonEvts.evts.length;ii++)
@@ -47,7 +48,7 @@ function    init()
         EvtsDePlant[hJsonEvts.evts[ii].id_plant].push(hJsonEvts.evts[ii].id)
         }
 
-    document.getElementById("divInfoDebug").innerHTML = s_info
+    //document.getElementById("divInfoDebug").innerHTML = s_info
     balisagePlants()
     }
     
@@ -67,18 +68,19 @@ function  balisagePlants()
                     {
                     debut = hJsonEvts.evts[ii].date
                     deltaDebut = moment(hJsonEvts.evts[ii].date).diff(moment(date_debut_vue), 'days')
-                    //alert ("Début plant " + hJsonEvts.evts[ii].id_plant + " = " +  delta )
                     // decalage debut
                     document.getElementById(hJsonEvts.evts[ii].id_plant).style.marginLeft = deltaDebut * pxParJ + "px" 
+                    //mise à jour visuelle info date
+                    document.getElementById(hJsonEvts.evts[ii].id_plant).getElementsByClassName("debut")[0].innerHTML = moment(debut).format("DD/MM/YYYY")
                     }
                 if (hJsonEvts.evts[ii].type == 'fin')
                     {
                     fin = hJsonEvts.evts[ii].date
-                    delta = moment(hJsonEvts.evts[ii].date).diff(moment(debut), 'days')
-                    // largeur = 
-                    document.getElementById(hJsonEvts.evts[ii].id_plant).style.width = (deltaDebut + delta * pxParJ ) + "px" 
+                    delta = moment(fin).diff(moment(debut), 'days')
+                    document.getElementById(hJsonEvts.evts[ii].id_plant).style.width = (deltaDebut + delta) * pxParJ  + "px"
+                    //mise à jour visuelle info date
+                    document.getElementById(hJsonEvts.evts[ii].id_plant).getElementsByClassName("fin")[0].innerHTML = moment(fin).format("DD/MM/YYYY")
                     }
-
                 }
             }
         }
@@ -108,8 +110,8 @@ Visionnage du <input type="text" name="date_debut_vue" value="{{date_debut_vue|d
         {% for plant in l_plants %}
         <div class="chrono_plant" id="{{plant.id}}" onmousedown="editePlant(this);toggleMove(this)" onmouseup="toggleMove(this)"
         variete="{{plant.variete_id}}" debut="{{plant.debut}}" fin="{{plant.fin}}" >
-        <span><div class="num_plant">{{plant.id}}</div><div class="variete">{{plant.variete}}</div>
-        <div class="plant_debut">{{plant.debut}}</div><div class="plant_fin">{{plant.fin}}</div></span>
+        <div><div class="num_plant" style="display: inline;">({{plant.id}}) </div><div class="variete" style="display: inline;">{{plant.variete}}</div><br/>
+        <div class="debut" style="display: inline;float:left">ddd{{plant.debut}}</div><br/><div class="fin" style="display: inline;float:right">{{plant.fin}}fff</div></div>
         </div>
         {% endfor %}
     </div>

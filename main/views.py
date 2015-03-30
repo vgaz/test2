@@ -48,13 +48,15 @@ def chronoPlanche(request):
         
     l_typesEvt = TypeEvenement.objects.all()
     
-    ## on prend tous les evts de l'encadrement
-    l_evts = Evenement.objects.filter(date__gte = date_debut_vue, date__lte = date_fin_vue)
+    ## on prend tous les evts de l'encadrement et pour la planche courrante
+    l_evts = Evenement.objects.filter(date__gte = date_debut_vue, 
+                                      date__lte = date_fin_vue, 
+                                      plant_base__in = PlantBase.objects.filter(planche_id = planche))
     ## on en deduit les plants impliqués, même partiellement
     l_plantsId = list(set([evt.plant_base_id for evt in l_evts]))
     ## on recupère de nouveau tous les évenements des plants impactés , même ceux hors fenetre temporelle
     l_evts = Evenement.objects.filter(plant_base_id__in = l_plantsId).order_by('plant_base_id', 'date')
-    l_plants = PlantBase.objects.filter(planche = planche, id__in = l_plantsId )
+    l_plants = PlantBase.objects.filter(planche_id = planche, id__in = l_plantsId )
 
     return render(request,
                  'main/chrono_planche.html',
@@ -114,14 +116,16 @@ def editionPlanche(request):
                            "nom":et.nom, 
                            "titre":Constant.d_TitresTypeEvt[et.nom]})
     ## filtrage par date
-    l_evts = l_evts.filter(date__gte = dateVue)XXXXXXXc'est ici'
-    for ev in l_evts: print "F ", ev
-    l_evts = Evenement.objects.filter(type = TypeEvenement.objects.get(nom = "debut"), date__lte = dateVue)
-
+    l_evts_debut = Evenement.objects.filter(type = TypeEvenement.objects.get(nom = "debut"), date__lte = dateVue)
+    l_PlantsIds = list(l_evts_debut.values_list('plant_base_id', flat=True))
+    print l_PlantsIds
+    ## recup des evenement de fin ayant les memes id_plants que les evts de debut 
+    l_evts = Evenement.objects.filter(type = TypeEvenement.objects.get(nom = "fin"), plant_base_id__in = l_PlantsIds, date__gte = dateVue)
+    
     l_PlantsIds = l_evts.values_list('plant_base_id', flat=True)
     print l_PlantsIds
     l_plants = PlantBase.objects.filter(planche = planche, id__in = l_PlantsIds)
-
+    
     return render(request,
                  'main/edition_planche.html',
                  {

@@ -65,6 +65,8 @@ def serveRequest(request):
             evt.nom = request.POST.get("nom","")
             evt.date = datetime.datetime.strptime(request.POST.get("date",""), Constant.FORMAT_DATE)
             evt.type = TypeEvenement.objects.get(nom=request.POST.get("type", ""))
+            if evt.type == TypeEvenement.objects.get(nom="fin"):
+                evt.date = evt.date + datetime.timedelta(hours=20)  ## pour eviter les confusions de debut de jour à 0 h , on finit la journée à 20h 
             evt.plant_base = PlantBase.objects.get(id=int(request.POST.get("id_plan", 0)))
             evt.date_creation = datetime.datetime.now()
             evt.save()
