@@ -7,7 +7,7 @@
 .chrono_plant
     {
     width: 30%;
-    height: 60px;
+    height: 70px;
     background: white;
     color: black;
     border-color: yellow;
@@ -24,7 +24,7 @@
     s_info = ""
     date_debut_vue = "{{date_debut_vue|safe}}"
     date_fin_vue = "{{date_fin_vue|safe}}"
-    TitreEvtDeNom = {{d_TitresTypeEvt|safe}}
+
     NomEvtDeId = {  {% for evtType in l_typesEvt %} '{{evtType.id}}':'{{evtType.nom}}',{% endfor %}  }
     
     jsonEvts = '{"evts":[{% for evt in l_evts %}\
@@ -34,9 +34,7 @@
 function    init()
     {
     // nb px par jour en fonction des bornes , on ajoute 1 pour inclure le dernier jour plein 
-    pxParJ = window.getComputedStyle(document.getElementById("cadre_chrono")).width.split('px')[0] / moment(date_fin_vue).diff(moment(date_debut_vue), 'days')
     pxParH = window.getComputedStyle(document.getElementById("cadre_chrono")).width.split('px')[0] / moment(date_fin_vue).diff(moment(date_debut_vue), 'hours') 
-    
 
     // creation d'une liste d'evts pour chaque id_plant
     hJsonEvts = JSON.parse(jsonEvts)
@@ -68,10 +66,8 @@ function  balisagePlants()
                 if (hJsonEvts.evts[ii].type == 'debut')
                     {
                     debut = hJsonEvts.evts[ii].date
-                    //deltaDebut = moment(hJsonEvts.evts[ii].date).diff(moment(date_debut_vue), 'days')
                     deltaDebutH = moment(hJsonEvts.evts[ii].date).diff(moment(date_debut_vue), 'hours')
                     // decalage debut
-                    //document.getElementById(hJsonEvts.evts[ii].id_plant).style.marginLeft = deltaDebut * pxParJ + "px" 
                     document.getElementById(hJsonEvts.evts[ii].id_plant).style.marginLeft = deltaDebutH * pxParH + "px" 
                     //mise à jour visuelle info date
                     document.getElementById(hJsonEvts.evts[ii].id_plant).getElementsByClassName("debut")[0].innerHTML = moment(debut).format("DD/MM/YYYY")
@@ -79,9 +75,7 @@ function  balisagePlants()
                 if (hJsonEvts.evts[ii].type == 'fin')
                     {
                     fin = hJsonEvts.evts[ii].date
-                    delta = moment(fin).diff(moment(debut), 'days')
                     deltaH = moment(fin).diff(moment(debut), 'hours')
-                    //document.getElementById(hJsonEvts.evts[ii].id_plant).style.width = (deltaDebut + delta) * pxParJ  + "px"
                     document.getElementById(hJsonEvts.evts[ii].id_plant).style.width = deltaH * pxParH  + "px"
                     //mise à jour visuelle info date
                     document.getElementById(hJsonEvts.evts[ii].id_plant).getElementsByClassName("fin")[0].innerHTML = moment(fin).format("DD/MM/YYYY")
@@ -104,8 +98,8 @@ function  balisagePlants()
 
 <form action="" method="POST" accept-charset="utf-8">
 {% csrf_token %}
-Visionnage du <input type="text" name="date_debut_vue" value="{{date_debut_vue|date:'d/m/Y'}}" /> au <input type="text" name="date_fin_vue" value="{{date_fin_vue|date:'d/m/Y'}}" />
-<input type="hidden" name="num_planche" value="{{planche.num}}" />
+Visionnage du <input style="width: 100px" type="text" name="date_debut_vue" value="{{date_debut_vue|date:'d/m/Y'}}" /> au <input style="width: 100px" type="text" name="date_fin_vue" value="{{date_fin_vue|date:'d/m/Y'}}" />
+ pour la planche <input style="width: 30px" type="text" name="num_planche" value="{{planche.num}}" />
 <input style="margin-left: 20px" type="submit" value="Envoyer"/>
 </form>
 

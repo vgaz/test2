@@ -32,9 +32,13 @@ def home(request):
 
 def chronoPlanche(request):
 
+    try:
+        laPlanche = Planche.objects.get(num = int(request.POST.get("num_planche", request.GET.get("num_planche", 0))))
+        print laPlanche
+    except:
+        s_msg = "Planche non trouvée... Est elle bien existante ?"
+        return render(request, 'main/erreur.html',  { "appVersion":Constant.APP_VERSION, "appName":Constant.APP_NAME, "message":s_msg})
 
-    planche = Planche.objects.get(num = int(request.GET.get("num_planche", request.POST.get("num_planche", 0))))
-    print  planche
     delta20h = datetime.timedelta(hours=20)
 
     if request.POST.get("date_debut_vue",""):
@@ -53,19 +57,19 @@ def chronoPlanche(request):
     ## on prend tous les evts de l'encadrement et pour la planche courrante
     l_evts = Evenement.objects.filter(date__gte = date_debut_vue, 
                                       date__lte = date_fin_vue, 
-                                      plant_base__in = PlantBase.objects.filter(planche_id = planche))
+                                      plant_base__in = PlantBase.objects.filter(planche_id = laPlanche))
     ## on en deduit les plants impliqués, même partiellement
     l_plantsId = list(set([evt.plant_base_id for evt in l_evts]))
     ## on recupère de nouveau tous les évenements des plants impactés , même ceux hors fenetre temporelle
     l_evts = Evenement.objects.filter(plant_base_id__in = l_plantsId).order_by('plant_base_id', 'date')
-    l_plants = PlantBase.objects.filter(planche_id = planche, id__in = l_plantsId )
+    l_plants = PlantBase.objects.filter(planche_id = laPlanche, id__in = l_plantsId )
 
     return render(request,
                  'main/chrono_planche.html',
                  {
                   "appVersion":Constant.APP_VERSION,
                   "appName":Constant.APP_NAME,
-                  "planche": planche,
+                  "planche": laPlanche,
                   "l_typesEvt":l_typesEvt,
                   "d_TitresTypeEvt": Constant.d_TitresTypeEvt,
                   "l_plants":l_plants,
@@ -105,7 +109,7 @@ class CreationPlanche(CreateView):
 
 def editionPlanche(request):
 
-    planche = Planche.objects.get(num = int(request.GET.get('num_planche', 1)))
+    planche = Planche.objects.get(num = int(request.GET.get('num_planche', 0)))
     s_date = request.POST.get("date", "")
     if s_date:
         dateVue = datetime.datetime.strptime(s_date, Constant.FORMAT_DATE)

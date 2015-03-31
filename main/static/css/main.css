@@ -142,7 +142,7 @@ margin:10px;
     display: inline;
 }
     
-.BlueFrame, .YellowFrame, .GreenFrame
+.BlueFrame, .YellowFrame, .GreenFrame, .RedFrame
 {
     width:20%;
     background: #FFFFFF;
@@ -166,6 +166,10 @@ margin:10px;
 .GreenFrame
 {
     border:5px solid #22FF22;
+}
+.RedFrame
+{
+    border:5px solid red;
 }
 
 #adminTools
