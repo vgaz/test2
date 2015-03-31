@@ -57,39 +57,43 @@ function supprimePlant(plant_id)
     document.getElementById('matrice').removeChild(document.getElementById(plant_id))
     }
 
+function majListEvts(id_plant)
+    {
+    // recup evts
+    s_request = "cde=getEvtsPlant&id="+ id_plant
+    rep = requestServer(s_request)  
+    jsonRep = JSON.parse(rep)
+    s_debut = ""
+    s_fin = ""
+    s_evts = '<ul class="listEvts">\n'
+    if (jsonRep.status == 'true' )
+        {
+        //recuperation de tous les evenements, on met en gras le debut et fin
+        for(ii=0;ii<jsonRep.l_evts.length;ii++)
+            {
+            s_tag = ""
+            if (jsonRep.l_evts[ii].type == "debut")
+                s_tag = jsonTitreTypeEvt["debut"] +  " "
+            if (jsonRep.l_evts[ii].type == "fin")
+                s_tag = jsonTitreTypeEvt["fin"] +  " "
+            s_evts += "<li><b>" + s_tag +"</b> " + jsonRep.l_evts[ii].date + " "  + jsonRep.l_evts[ii].nom 
+            s_evts += "<a href='javascript:supprimeEvenement(" + jsonRep.l_evts[ii].id + ")'><img src='{{STATIC_URL}}images/toDelete.jpeg' title='Supprimer'></a></li>"
+            }
+        }    
+    s_evts += s_debut + s_fin + "</ul>\n"
+
+    document.getElementById("editPlant_evts").innerHTML = s_evts
+    }
+    
 function editePlant(hPlant)
     {
     // recup evenements liés à ce plant
     id_plant = hPlant.getAttribute("id")
     
     if (id_plant.search("_") != 1)
-        { 
-        // recup evts
-        s_request = "cde=getEvtsPlant&id="+ id_plant
-        rep = requestServer(s_request)	
-        jsonRep = JSON.parse(rep)
-        s_debut = ""
-        s_fin = ""
-        s_evts = '<ul class="listEvts">\n'
-        if (jsonRep.status == 'true' )
-            {
-            //recuperation de tous les evenements, on met en gras le debut et fin
-            for(ii=0;ii<jsonRep.l_evts.length;ii++)
-                {
-                s_tag = ""
-                if (jsonRep.l_evts[ii].type == "debut")
-                    s_tag = jsonTitreTypeEvt["debut"] +  " "
-                if (jsonRep.l_evts[ii].type == "fin")
-                    s_tag = jsonTitreTypeEvt["fin"] +  " "
-                s_evts += "<li><b>" + s_tag +"</b> " + jsonRep.l_evts[ii].date + " "  + jsonRep.l_evts[ii].nom 
-                s_evts += "<a href='javascript:supprimeEvenement(" + jsonRep.l_evts[ii].id + ")'><img src='{{STATIC_URL}}images/toDelete.jpeg' title='Supprimer'></a></li>"
-                }
-            }    
-        s_evts += s_debut + s_fin + "</ul>\n"
-
-        document.getElementById("editPlant_evts").innerHTML = s_evts
-
-        }
+        majListEvts(id_plant)
+        
+        
     // maj variété
     id_variet  = hPlant.getAttribute("variete")
     list = document.getElementById("editPlant_select_var").getElementsByTagName("option")
@@ -105,6 +109,7 @@ function editePlant(hPlant)
     document.getElementById("editPlant_id_planche").innerHTML = {{planche.num}}
     document.getElementById("editPlant_plantId").innerHTML = id_plant
     document.getElementById("divEditPlan").style.display = "inline"
+    
     }
 
 function sauvePlant()
@@ -162,20 +167,26 @@ function supprimeEvenement(idEvent)
     if (jsonRep.status == 'false')
         alert (jsonRep.err)
     else
-        editePlant(document.getElementById("editPlant_plantId"))
+        majListEvts(document.getElementById("editPlant_plantId").innerHTML)
     }
 
 function sauveEvenement()
     {
 	// recup données et ajout
-	s_request = "cde=ajoutEvt&nom="+ document.getElementById("edit_evt_nom").value
+	s_request = "cde=ajoutEvt&nom=" + document.getElementById("edit_evt_nom").value
     s_request += "&date=" + document.getElementById("edit_evt_date").value
     s_request += "&type=" + document.getElementById("edit_evt_select_type").value
-	s_request += "&id_plan=" + document.getElementById("editPlant_plantId").innerHTML
+    id_plant = document.getElementById("editPlant_plantId").innerHTML
+	s_request += "&id_plan=" + id_plant
     rep = requestServer(s_request)
     jsonRep = JSON.parse(rep)
     if (jsonRep.status == 'false')
         alert (jsonRep.err)
+    // maj fenetre d'edition du plant
+    majListEvts(id_plant)
+    // nettoyage nom et date de l'evt
+    document.getElementById("edit_evt_nom").value = ""
+    document.getElementById("edit_evt_date").value = ""
     }
 
 function sauveMatrice()
@@ -325,13 +336,12 @@ Date <input type="text" name="date" value="{{date|date:'d/m/Y'}}" />
     	           <option value="{{var.id}}" name="{{var.nom}}">{{var.nom}}</option>
     	    {% endfor %}</select>
     
-    <br/>Nb graines : <input type="text" id="editPlant_nb_graines" value="1">
+    <br/>Nb graines : <input style="width: 30px" type="text" id="editPlant_nb_graines" value="1">
     
     <br/><br/><b>Evenements</b><div id="editPlant_evts"> </div>
     
     <br/>
     
-    <input type='button' value='Sauver le plant' name='sauver' onclick="sauvePlant()"/><br/>                   
     <input type='button' value='Ajouter un évènement' name='ajout' onclick="ajouteEvenement()"/><br/>
     
     <hr/>
