@@ -34,7 +34,8 @@
 function    init()
     {
     // nb px par jour en fonction des bornes , on ajoute 1 pour inclure le dernier jour plein 
-    pxParJ = window.getComputedStyle(document.getElementById("cadre_chrono")).width.split('px')[0] / (moment(date_fin_vue).diff(moment(date_debut_vue), 'days') +1)
+    pxParJ = window.getComputedStyle(document.getElementById("cadre_chrono")).width.split('px')[0] / moment(date_fin_vue).diff(moment(date_debut_vue), 'days')
+    pxParH = window.getComputedStyle(document.getElementById("cadre_chrono")).width.split('px')[0] / moment(date_fin_vue).diff(moment(date_debut_vue), 'hours') 
     
 
     // creation d'une liste d'evts pour chaque id_plant
@@ -67,9 +68,11 @@ function  balisagePlants()
                 if (hJsonEvts.evts[ii].type == 'debut')
                     {
                     debut = hJsonEvts.evts[ii].date
-                    deltaDebut = moment(hJsonEvts.evts[ii].date).diff(moment(date_debut_vue), 'days')
+                    //deltaDebut = moment(hJsonEvts.evts[ii].date).diff(moment(date_debut_vue), 'days')
+                    deltaDebutH = moment(hJsonEvts.evts[ii].date).diff(moment(date_debut_vue), 'hours')
                     // decalage debut
-                    document.getElementById(hJsonEvts.evts[ii].id_plant).style.marginLeft = deltaDebut * pxParJ + "px" 
+                    //document.getElementById(hJsonEvts.evts[ii].id_plant).style.marginLeft = deltaDebut * pxParJ + "px" 
+                    document.getElementById(hJsonEvts.evts[ii].id_plant).style.marginLeft = deltaDebutH * pxParH + "px" 
                     //mise à jour visuelle info date
                     document.getElementById(hJsonEvts.evts[ii].id_plant).getElementsByClassName("debut")[0].innerHTML = moment(debut).format("DD/MM/YYYY")
                     }
@@ -77,7 +80,9 @@ function  balisagePlants()
                     {
                     fin = hJsonEvts.evts[ii].date
                     delta = moment(fin).diff(moment(debut), 'days')
-                    document.getElementById(hJsonEvts.evts[ii].id_plant).style.width = (deltaDebut + delta) * pxParJ  + "px"
+                    deltaH = moment(fin).diff(moment(debut), 'hours')
+                    //document.getElementById(hJsonEvts.evts[ii].id_plant).style.width = (deltaDebut + delta) * pxParJ  + "px"
+                    document.getElementById(hJsonEvts.evts[ii].id_plant).style.width = deltaH * pxParH  + "px"
                     //mise à jour visuelle info date
                     document.getElementById(hJsonEvts.evts[ii].id_plant).getElementsByClassName("fin")[0].innerHTML = moment(fin).format("DD/MM/YYYY")
                     }

@@ -35,17 +35,19 @@ def chronoPlanche(request):
 
     planche = Planche.objects.get(num = int(request.GET.get("num_planche", request.POST.get("num_planche", 0))))
     print  planche
-    
+    delta20h = datetime.timedelta(hours=20)
+
     if request.POST.get("date_debut_vue",""):
         date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue", ""), Constant.FORMAT_DATE)
-        date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue", ""), Constant.FORMAT_DATE)
-        print date_debut_vue, date_fin_vue
+        date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue", ""), Constant.FORMAT_DATE) + delta20h
     else:
         now = datetime.datetime.now()
         delta = datetime.timedelta(days=60)
         date_debut_vue = now - delta
-        date_fin_vue = now + delta
-        
+        date_fin_vue = now + delta + delta20h
+    
+    print date_debut_vue, date_fin_vue
+    
     l_typesEvt = TypeEvenement.objects.all()
     
     ## on prend tous les evts de l'encadrement et pour la planche courrante
