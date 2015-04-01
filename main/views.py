@@ -190,7 +190,7 @@ def quiz(request):
             {
              "message" : message,
              "form": form,
-             "appVersion":Constant.APP_VERSION
+             "appVersion": Constant.APP_VERSION
             }
           )  
     

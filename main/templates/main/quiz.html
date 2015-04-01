@@ -11,7 +11,7 @@
 <br/>
 <h2>Parmi les familles suivantes, quelle est celle de la variété : {{form.var.nom}} ?</h2>
 
-<form action="" method="POST"  style="list-style-type: none;">
+<form action="" method="POST" style="list-style-type: none;">
     {% csrf_token %}
     {{ form }}
 	<input type="hidden" name="variete" value="{{form.var.id}}" />

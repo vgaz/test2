@@ -75,7 +75,7 @@ def serveRequest(request):
     if cde == "sauveEvt":
         try:
             id = int(request.POST.get("id",0))
-            if id:
+            if id != 0:
                 # svg d'un evt deja existant
                 evt = Evenement.objects.get(id=id)
             else:

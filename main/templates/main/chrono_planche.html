@@ -7,7 +7,7 @@
 .chrono_plant
     {
     width: 30%;
-    height: 70px;
+    height: 75px;
     background: white;
     color: black;
     border-color: yellow;
@@ -82,8 +82,10 @@ function  balisagePlants()
                     }
                 else
                     {
-                        //positionnement des autres évènements
-                        
+                    //positionnement des autres évènements
+                    deltaPx = moment(hJsonEvts.evts[ii].date).diff(moment(debut), 'hours') * pxParH  + "px"
+                    s_evt = "<img title='"+ hJsonEvts.evts[ii].nom + '\n' + moment(hJsonEvts.evts[ii].date).format("DD/MM/YYYY") + "' src='{{STATIC_URL}}images/puce.png' style='margin-left:" + deltaPx + "'>"
+                    document.getElementById(hJsonEvts.evts[ii].id_plant).getElementsByClassName("evts")[0].innerHTML += s_evt
                     }
                 }
             }
@@ -110,14 +112,17 @@ Visionnage du <input style="width: 100px" type="text" name="date_debut_vue" valu
 
 <br/><br/>
     <div id="cadre_chrono">
+        
         {# plants existants en base #}
         {% for plant in l_plants %}
         <div class="chrono_plant" id="{{plant.id}}" onmousedown="editePlant(this);toggleMove(this)" onmouseup="toggleMove(this)"
         variete="{{plant.variete_id}}" debut="{{plant.debut}}" fin="{{plant.fin}}" >
         <div><div class="num_plant" style="display: inline;">({{plant.id}}) </div><div class="variete" style="display: inline;">{{plant.variete}}</div><br/>
-        <div class="debut" style="display: inline;float:left">ddd{{plant.debut}}</div><br/><div class="fin" style="display: inline;float:right">{{plant.fin}}fff</div></div>
+        <div class="debut" style="display: inline;float:left">ddd{{plant.debut}}</div><br/><div class="fin" style="display:inline;float:right">{{plant.fin}}fff</div>
+        <br/><div class="evts" style="display: inline;float:left"> </div></div>
         </div>
         {% endfor %}
+        
     </div>
 </div>
 
