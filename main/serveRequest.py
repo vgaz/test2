@@ -15,7 +15,7 @@ import Constant
 def serveRequest(request):
     """Received a request and return specific response"""
 
-    ## --------------- request to get detail tests results
+    ## --------------- renvoi de tous les evenements d'un plant
     cde = request.POST.get("cde","")
     print "cde =", cde
     if cde == "getEvtsPlant": 
@@ -31,6 +31,19 @@ def serveRequest(request):
              
         return HttpResponse( s_json, content_type="application/json")
 
+    ## --------------- renvoi d'un evt
+    cde = request.POST.get("cde","")
+    print "cde =", cde
+    if cde == "getEvt": 
+        try:
+            evt = Evenement.objects.get(id = int(request.POST.get("id", 0)))
+            s_ = '{"id":"%d","nom":"%s","date":"%s","type":"%s"}'%(evt.id, evt.nom, evt.date.strftime(Constant.FORMAT_DATE), evt.type)       
+            s_json = '{"status":"true","evt":%s}'% s_
+        except:
+            print(__name__ + ': ' + str(sys.exc_info()[1]) )
+            s_json = '{"status":"false","err":%s}'%sys.exc_info()[1]
+             
+        return HttpResponse( s_json, content_type="application/json")
 
     ## --------------- request to update database 
     if cde =='sauve_plant':
@@ -59,9 +72,15 @@ def serveRequest(request):
 
     
     ## --------------- request to update database 
-    if cde == "ajoutEvt":
+    if cde == "sauveEvt":
         try:
-            evt = Evenement()
+            id = int(request.POST.get("id",0))
+            if id:
+                # svg d'un evt deja existant
+                evt = Evenement.objects.get(id=id)
+            else:
+                ## svg d'un nouvel evt
+                evt = Evenement()
             evt.nom = request.POST.get("nom","")
             evt.date = datetime.datetime.strptime(request.POST.get("date",""), Constant.FORMAT_DATE)
             evt.type = TypeEvenement.objects.get(nom=request.POST.get("type", ""))
@@ -71,6 +90,7 @@ def serveRequest(request):
             evt.date_creation = datetime.datetime.now()
             evt.save()
             print evt
+                
             s_json = '{"status":"true"}'
         except:
             s_json = '{"status":"false","err":"%s"}'%sys.exc_info()[1]

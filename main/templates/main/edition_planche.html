@@ -65,7 +65,7 @@ function majListEvts(id_plant)
     jsonRep = JSON.parse(rep)
     s_debut = ""
     s_fin = ""
-    s_evts = '<ul class="listEvts">\n'
+    s_evts = '<table border="0" width="100%">\n'
     if (jsonRep.status == 'true' )
         {
         //recuperation de tous les evenements, on met en gras le debut et fin
@@ -76,11 +76,12 @@ function majListEvts(id_plant)
                 s_tag = jsonTitreTypeEvt["debut"] +  " "
             if (jsonRep.l_evts[ii].type == "fin")
                 s_tag = jsonTitreTypeEvt["fin"] +  " "
-            s_evts += "<li><b>" + s_tag +"</b> " + jsonRep.l_evts[ii].date + " "  + jsonRep.l_evts[ii].nom 
-            s_evts += "<a href='javascript:supprimeEvenement(" + jsonRep.l_evts[ii].id + ")'><img src='{{STATIC_URL}}images/toDelete.jpeg' title='Supprimer'></a></li>"
+            s_evts += "<tr><td><b>" + s_tag +"</b> " + jsonRep.l_evts[ii].date + " "  + jsonRep.l_evts[ii].nom + "</td>"
+            s_evts += "<td><a href='javascript:editeEvenement(" + jsonRep.l_evts[ii].id + ")'><img align='right' src='{{STATIC_URL}}images/editor.png' title='Editer'></a></td>"
+            s_evts += "<td><a href='javascript:supprimeEvenement(" + jsonRep.l_evts[ii].id + ")'><img align='right'src='{{STATIC_URL}}images/toDelete.jpeg' title='Supprimer'></a></td></tr>"
             }
         }    
-    s_evts += s_debut + s_fin + "</ul>\n"
+    s_evts += s_debut + s_fin + "</table>\n"
 
     document.getElementById("editPlant_evts").innerHTML = s_evts
     }
@@ -157,6 +158,25 @@ function affichePlant(obj_plant)
 function ajouteEvenement()
     {
     document.getElementById("divEditEvenement").style.display = "block"
+    document.getElementById("edit_evt_id").value = 0
+    document.getElementById("edit_evt_nom").value = ""
+    document.getElementById("edit_evt_date").value = ""
+    document.getElementById("edit_evt_type").value = ""   
+    }
+    
+function editeEvenement(idEvent)
+    {
+    // recup evts
+    s_request = "cde=getEvt&id=" + idEvent
+    rep = requestServer(s_request)  
+    jsonRep = JSON.parse(rep)
+    if (jsonRep.status == 'true')
+        {   
+        document.getElementById("edit_evt_id").value = jsonRep.evt.id
+        document.getElementById("edit_evt_nom").value = jsonRep.evt.nom
+        document.getElementById("edit_evt_date").value = jsonRep.evt.date
+        document.getElementById("edit_evt_type").value = jsonRep.evt.type       
+        }
     }
      
 function supprimeEvenement(idEvent)
@@ -173,9 +193,9 @@ function supprimeEvenement(idEvent)
 function sauveEvenement()
     {
 	// recup données et ajout
-	s_request = "cde=ajoutEvt&nom=" + document.getElementById("edit_evt_nom").value
+	s_request = "cde=sauveEvt&id="+ document.getElementById("edit_evt_id").value +"&nom=" + document.getElementById("edit_evt_nom").value
     s_request += "&date=" + document.getElementById("edit_evt_date").value
-    s_request += "&type=" + document.getElementById("edit_evt_select_type").value
+    s_request += "&type=" + document.getElementById("edit_evt_type").value
     id_plant = document.getElementById("editPlant_plantId").innerHTML
 	s_request += "&id_plan=" + id_plant
     rep = requestServer(s_request)
@@ -354,18 +374,19 @@ Date <input type="text" name="date" value="{{date|date:'d/m/Y'}}" />
 		<h2>Gestion d'évenement</h2>
 		
 		<table>
-		<tr><td>Type : <select id="edit_evt_select_type">
+		<tr><td>Type : <select id="edit_evt_type">
 		              {% for typeEvt in l_typesEvt %}  
                       <option value="{{typeEvt.nom}}">{{typeEvt.titre}}</option>
                       {% endfor %}
                       </select>
 		</td></tr>
-        <tr><td>Nom : <input type='text' value='' id='edit_evt_nom'/></td></tr>
-		<tr><td>Date : (jj/mm/aaaa): <input type='text' value='' id='edit_evt_date'/></td></tr>
+        <tr><td>Nom : <input type='hidden' value='0' id='edit_evt_id'/><input type='text' value='' id='edit_evt_nom'/></td></tr>
+		<tr><td>Date : (jj/mm/aaaa): <input style="width: 100px" type='text' value='' id='edit_evt_date'/></td></tr>
 		<tr><td><input type='button' value='Cancel' name='sauver' onclick="document.getElementById('divEditEvenement').style.display = 'none'" />
-		        <input type='button' value='Sauver' name='sauver' onclick="sauveEvenement()" />
+		        <input type='button' value='Sauver' name='sauver' onclick="sauveEvenement()" defaultValue="true" />
 		</td></tr>
         </table>
+        
 </div>
 
 </div>

@@ -72,13 +72,18 @@ function  balisagePlants()
                     //mise à jour visuelle info date
                     document.getElementById(hJsonEvts.evts[ii].id_plant).getElementsByClassName("debut")[0].innerHTML = moment(debut).format("DD/MM/YYYY")
                     }
-                if (hJsonEvts.evts[ii].type == 'fin')
+                else if (hJsonEvts.evts[ii].type == 'fin')
                     {
                     fin = hJsonEvts.evts[ii].date
                     deltaH = moment(fin).diff(moment(debut), 'hours')
                     document.getElementById(hJsonEvts.evts[ii].id_plant).style.width = deltaH * pxParH  + "px"
                     //mise à jour visuelle info date
                     document.getElementById(hJsonEvts.evts[ii].id_plant).getElementsByClassName("fin")[0].innerHTML = moment(fin).format("DD/MM/YYYY")
+                    }
+                else
+                    {
+                        //positionnement des autres évènements
+                        
                     }
                 }
             }
