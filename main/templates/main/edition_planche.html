@@ -23,7 +23,7 @@ function init()
     document.getElementById("matrice").style.height = ({{planche.largeur_cm}} * pxParCm ).toString() + "px"
     document.getElementById("matrice").style.width = ({{planche.largeur_cm}} * pxParCm ).toString() + "px"
     affichePlants()
-
+    ///window.location.pathname = "example/index.html"   juste pour penser à rechercher la facon d'affecter l'url editbox d'une page
     }
 
 
@@ -166,6 +166,8 @@ function ajouteEvenement()
     
 function editeEvenement(idEvent)
     {
+    document.getElementById("divEditEvenement").style.display = "block"
+
     // recup evts
     s_request = "cde=getEvt&id=" + idEvent
     rep = requestServer(s_request)  
