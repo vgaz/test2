@@ -1,23 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from django.core.management.base import BaseCommand       
-from main.models import Famille, Variete, TypeEvenement
+from main.models import Famille, Variete, TypeEvenement, Planche
 import csv
 from main.Constant import d_TitresTypeEvt
-
-def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, **kwargs):
-    # csv.py doesn't do Unicode; encode temporarily as UTF-8:
-    csv_reader = csv.reader(utf_8_encoder(unicode_csv_data),
-                            dialect=dialect, **kwargs)
-    for row in csv_reader:
-        # decode UTF-8 back to Unicode, cell by cell:
-        yield [unicode(cell, 'utf-8') for cell in row]
-
-def utf_8_encoder(unicode_csv_data):
-    for line in unicode_csv_data:
-        yield line.encode('utf-8')
-        
-        
+       
 class Command(BaseCommand):
     """updateDB command"""
     help = "updateDB"
@@ -25,12 +12,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         
         ## maj type d'évenement
-        l_typeEvt = [unicode(t) for t in TypeEvenement.objects.all().values_list("nom", flat=True)]
-        for n in d_TitresTypeEvt.keys():
-            if n not in l_typeEvt:
-                hTE = TypeEvenement()
-                hTE.nom = n
-                hTE.save()
+        l_typeEvt = TypeEvenement.objects.all().values_list("nom", flat=True)
+        for n in d_TitresTypeEvt.keys():    
+            if n in l_typeEvt: continue 
+            hTE = TypeEvenement()
+            hTE.nom = n
+            hTE.save()
         
         reader = csv.DictReader(file("famillesLegumes.csv", "rb"))
         
@@ -94,7 +81,6 @@ class Command(BaseCommand):
                     v.save()
                     print "ajout" , v
 
-
             v = Variete.objects.get( nom = variet )
                 
             ## mise à jour des variétés qui peuvent ou pas aller avec celle-ci
@@ -102,9 +88,8 @@ class Command(BaseCommand):
                 v.avec.add(Variete.objects.get( nom = var ))
             for var in l_varSans:
                 v.sans.add(Variete.objects.get( nom = var ))
-            
-            v.save()
 
+            v.save()
 
         self.stdout.write("end of command " + self.__doc__)  
         

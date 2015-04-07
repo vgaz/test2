@@ -7,11 +7,16 @@
 <div class="BlueFrame" style="list-style-type: none;width: 50%; margin-left: 20%">
 
 {% for var in l_vars %}
-  <p><img style="float:left;" src="{{MEDIA_URL}}{{var.image}}" title="{{var.nom}}" /><h2>&nbsp;&nbsp;{{var.nom|title}}
-      {% if var.famille %} ({{var.famille}}) {% endif %}</h2> 
+ 
+      <table>
+          <tr>
+          {% if var.image %}<td><img style="float:left;width: 80px;height: 80px" src="{{MEDIA_URL}}{{var.image}}" title="{{var.nom}}" /></td>{% endif %}
+          <td><h2>&nbsp;&nbsp;{{var.nom|title}} {% if var.famille %} ({{var.famille}}) {% endif %} </h2> </td>
+          </tr>
+      </table>
       {% if var.avec.distinct %} <img src="{{ STATIC_URL }}images/smileyOK.jpg" width="32px" height="32px"  title="Avec"/> {{var.avec.distinct|join:", "}} <br/>{% endif %}
       {% if var.sans.distinct %}  <img src="{{ STATIC_URL }}images/smileyKO.jpg" width="32px" height="32px"  title="Sans"/>{{var.sans.distinct|join:", "}} <br/>{% endif %}
-  </p>
+      <hr />
 {% endfor %}
 </div>
 

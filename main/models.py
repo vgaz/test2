@@ -19,8 +19,7 @@ class Variete(models.Model):
     famille = models.ForeignKey(Famille, null=True, blank=True)
     avec = models.ManyToManyField("self", related_name="avec", null=True, blank=True)
     sans = models.ManyToManyField("self", related_name="sans", null=True, blank=True)
-
-    ## image = models.ImageField()
+    image = models.ImageField()
 #    objects = MyManager()  ## objects est le nom par defaut du manager, ici surcharge eventuelle
     
     class Meta: 
@@ -65,7 +64,9 @@ class PlantBase(models.Model):
                                                                 self.planche.num)
 
 class TypeEvenement(models.Model):
+    
     nom = models.CharField(max_length=20)
+    
     def __unicode__(self):
         return self.nom
     

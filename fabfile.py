@@ -21,12 +21,18 @@ def l_start():
 def updateDB():
     """update local CI Django database"""
     print "running updateDB"
-    local("python manage.py updateDB")
-
+    local("python ./manage.py updateDB")
  
 def sauveTables():
     """sauveTables"""
-    local("python manage.py dumpdata > ./tables.json")
+    import datetime
+    s_file = datetime.datetime.now().strftime('%Y-%m-%d--%H-%M-%S') + "_tables.json"
+    local("python manage.py dumpdata --indent 2 > ./svg/%s"%s_file)
+ 
+def chargeTables(s_filePath):
+    """chargement d'une sauvegarde"""
+    print s_filePath
+    local("python manage.py loaddata %s"%s_filePath)
 
 def apache_start():
     """start apache server """

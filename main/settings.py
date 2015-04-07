@@ -29,8 +29,8 @@ MIDDLEWARE_CLASSES = (
 STATIC_URL = '/static/'
 ROOT_URLCONF = 'main.urls'
 
-MEDIA_ROOT = os.path.join(PROJECT_PATH, "media")
-MEDIA_URL = '/media/' 
+MEDIA_ROOT = os.path.join(PROJECT_PATH, "main", "media")
+MEDIA_URL = '/static/../media/' 
 
 WSGI_APPLICATION = 'main.wsgi.application'
 

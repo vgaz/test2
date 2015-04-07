@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse_lazy
 
 admin.autodiscover()
 from views import CreationPlanche
-import Constant
+import Constant, settings
 
 urlpatterns = patterns('',
 
@@ -27,3 +27,8 @@ urlpatterns = patterns('',
     url(r'^home', 'main.views.home',  name='home'),
     url(r'^$', RedirectView.as_view(url=reverse_lazy('home'))),
 )
+
+if settings.DEBUG:
+    # static files (images, css, javascript, etc.)
+    urlpatterns += patterns('',
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}))
