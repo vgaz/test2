@@ -40,6 +40,9 @@
 
 function    init()
     {
+    decalage_j = {{decalage_j|safe}}
+    changelePas(0) // juste pour affichage 1 ere fois
+
     // nb px par jour en fonction des bornes , on ajoute 1 pour inclure le dernier jour plein 
     pxParH = window.getComputedStyle(document.getElementById("cadre_chrono")).width.split('px')[0] / moment(date_fin_vue).diff(moment(date_debut_vue), 'hours') 
 
@@ -62,7 +65,7 @@ function    init()
     hBarreCeJour.style.height = window.getComputedStyle(document.getElementById("cadre_chrono")).height
     // decalage / debut
     delta = moment(date_du_jour).diff(moment(date_debut_vue), 'hours')
-    hBarreCeJour.style.marginLeft = /*(window.getComputedStyle(document.getElementById("cadre_chrono")).width.split('px')[0] */ delta * pxParH + "px" 
+    hBarreCeJour.style.marginLeft = delta * pxParH + "px" 
     }
     
 function  balisagePlants()
@@ -105,6 +108,14 @@ function  balisagePlants()
             }
         }
     }
+    
+function changelePas(delta)
+{
+    decalage_j += delta
+    if (decalage_j < 1) decalage_j = 1
+    document.getElementById("decalage_j").value = decalage_j
+}
+
 </script>
 
 {% endblock %}
@@ -122,8 +133,11 @@ function  balisagePlants()
 Visionnage du <input style="width: 100px" type="text" name="date_debut_vue" value="{{date_debut_vue|date:'d/m/Y'}}" /> au <input style="width: 100px" type="text" name="date_fin_vue" value="{{date_fin_vue|date:'d/m/Y'}}" />
  pour la planche <input style="width: 30px" type="text" name="num_planche" value="{{planche.num}}" />
 <input style="margin-left: 20px" type="submit" value="Envoyer"/>
-<input style="margin-left: 20px" type="submit" name="delta" value="avant"/>
- 15j <input type="submit" name="delta" value="apres"/>
+<input style="margin-left: 20px" type="submit" name="direction" value="recul"/>
+<input type="submit" name="direction" value="avance"/>
+
+Pas de <input style="width: 50px" type="text" id="decalage_j" name="decalage_j" value=""/>
+<button onclick="changelePas(-1);return(false)">-</button><button onclick="changelePas(1);return(false)">+</button>
 </form>
 
 <br/><br/>

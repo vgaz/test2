@@ -50,13 +50,14 @@ def chronoPlanche(request):
         date_debut_vue = date_du_jour - delta
         date_fin_vue = date_du_jour + delta + delta20h
     
-    delta = datetime.timedelta(days=15)
-    if request.POST.get("delta", "") == "avant":
-        date_debut_vue -= delta 
-        date_fin_vue -= delta
-    if request.POST.get("delta", "") == "apres":
+    decalage_j = int(request.POST.get("decalage_j", 10))
+    delta = datetime.timedelta(days = decalage_j)
+    if request.POST.get("direction", "") == "avance":
         date_debut_vue += delta 
-        date_fin_vue += delta        
+        date_fin_vue += delta
+    if request.POST.get("direction", "") == "recul":
+        date_debut_vue -= delta 
+        date_fin_vue -= delta        
         
     l_typesEvt = TypeEvenement.objects.all()
     
@@ -82,8 +83,8 @@ def chronoPlanche(request):
                   "l_evts": l_evts,
                   "date_debut_vue": date_debut_vue,
                   "date_fin_vue": date_fin_vue,
-                  "date_du_jour" : date_du_jour
-
+                  "date_du_jour" : date_du_jour,
+                  "decalage_j":decalage_j
                   })
 #################################################
 
