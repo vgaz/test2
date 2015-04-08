@@ -115,6 +115,12 @@ def editionPlanche(request):
         dateVue = datetime.datetime.strptime(s_date, Constant.FORMAT_DATE)
     else:
         dateVue = datetime.datetime.now()
+        
+    if request.POST.get("delta", "") == "demain":
+        dateVue += datetime.timedelta(days=1)
+    if request.POST.get("delta", "") == "hier":
+        dateVue += datetime.timedelta(days=-1)
+
     l_vars = Variete.objects.all()
     l_typesEvt = []
     for et in TypeEvenement.objects.all():

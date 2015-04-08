@@ -323,9 +323,11 @@ function deplace()
 {% block content %}
 <form action="" method="POST" accept-charset="utf-8">
 {% csrf_token %}
-Date <input type="text" name="date" value="{{date|date:'d/m/Y'}}" />
+Date <input style="width: 100px" type="text" name="date" value="{{date|date:'d/m/Y'}}" />
+<input type="submit" value="Envoyer" />
+<input style="margin-left: 20px" type="submit" name="delta" value="hier" />
+<input type="submit" name="delta" value="demain" />
 <input type="hidden" name="num_planche" value="{{planche.num}}" />
-<input style="margin-left: 20px" type="submit" value="Envoyer" />
 </form><br/>
 
 <div id="main" onmousemove="majXYMouse(event);deplace();" style="width: 80%">
