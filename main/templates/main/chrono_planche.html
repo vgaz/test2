@@ -4,17 +4,23 @@
 
 <style>
 
+#date_du_jour
+{
+    position:absolute;
+    width: 2px;
+    background: white;
+    border: 2px solid blue;   
+}
+
 .chrono_plant
     {
     width: 30%;
     height: 75px;
     background: white;
     color: black;
-    border-color: yellow;
     border: 5px solid green;
     }
 </style>
-
 
     <script type="text/javascript" src="{{ STATIC_URL }}javascripts/myTools.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}javascripts/moment-with-locales.min.js"></script>
@@ -24,6 +30,7 @@
     s_info = ""
     date_debut_vue = "{{date_debut_vue|safe}}"
     date_fin_vue = "{{date_fin_vue|safe}}"
+    date_du_jour = "{{date_du_jour|safe}}"
 
     NomEvtDeId = {  {% for evtType in l_typesEvt %} '{{evtType.id}}':'{{evtType.nom}}',{% endfor %}  }
     
@@ -49,6 +56,13 @@ function    init()
 
     //document.getElementById("divInfoDebug").innerHTML = s_info
     balisagePlants()
+    
+    // ajout ligne date du jour
+    hBarreCeJour = document.getElementById("date_du_jour")
+    hBarreCeJour.style.height = window.getComputedStyle(document.getElementById("cadre_chrono")).height
+    // decalage / debut
+    delta = moment(date_du_jour).diff(moment(date_debut_vue), 'hours')
+    hBarreCeJour.style.marginLeft = /*(window.getComputedStyle(document.getElementById("cadre_chrono")).width.split('px')[0] */ delta * pxParH + "px" 
     }
     
 function  balisagePlants()
@@ -108,10 +122,13 @@ function  balisagePlants()
 Visionnage du <input style="width: 100px" type="text" name="date_debut_vue" value="{{date_debut_vue|date:'d/m/Y'}}" /> au <input style="width: 100px" type="text" name="date_fin_vue" value="{{date_fin_vue|date:'d/m/Y'}}" />
  pour la planche <input style="width: 30px" type="text" name="num_planche" value="{{planche.num}}" />
 <input style="margin-left: 20px" type="submit" value="Envoyer"/>
+<input style="margin-left: 20px" type="submit" name="delta" value="avant"/>
+ 15j <input type="submit" name="delta" value="apres"/>
 </form>
 
 <br/><br/>
     <div id="cadre_chrono">
+    <div id="date_du_jour"> </div>
         
         {# plants existants en base #}
         {% for plant in l_plants %}

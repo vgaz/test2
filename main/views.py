@@ -40,18 +40,24 @@ def chronoPlanche(request):
         return render(request, 'main/erreur.html',  { "appVersion":Constant.APP_VERSION, "appName":Constant.APP_NAME, "message":s_msg})
 
     delta20h = datetime.timedelta(hours=20)
+    date_du_jour = datetime.datetime.now()
 
     if request.POST.get("date_debut_vue",""):
         date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue", ""), Constant.FORMAT_DATE)
         date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue", ""), Constant.FORMAT_DATE) + delta20h
     else:
-        now = datetime.datetime.now()
         delta = datetime.timedelta(days=60)
-        date_debut_vue = now - delta
-        date_fin_vue = now + delta + delta20h
+        date_debut_vue = date_du_jour - delta
+        date_fin_vue = date_du_jour + delta + delta20h
     
-    print date_debut_vue, date_fin_vue
-    
+    delta = datetime.timedelta(days=15)
+    if request.POST.get("delta", "") == "avant":
+        date_debut_vue -= delta 
+        date_fin_vue -= delta
+    if request.POST.get("delta", "") == "apres":
+        date_debut_vue += delta 
+        date_fin_vue += delta        
+        
     l_typesEvt = TypeEvenement.objects.all()
     
     ## on prend tous les evts de l'encadrement et pour la planche courrante
@@ -75,7 +81,8 @@ def chronoPlanche(request):
                   "l_plants":l_plants,
                   "l_evts": l_evts,
                   "date_debut_vue": date_debut_vue,
-                  "date_fin_vue": date_fin_vue
+                  "date_fin_vue": date_fin_vue,
+                  "date_du_jour" : date_du_jour
 
                   })
 #################################################
