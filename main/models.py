@@ -75,7 +75,7 @@ class Evenement(models.Model):
     plant_base = models.ForeignKey(PlantBase)
     date_creation = models.DateTimeField(default=datetime.datetime.now())
     date = models.DateTimeField()
-   
+    duree = models.PositiveIntegerField("nb jours d'activité")
     nom = models.CharField(max_length=100, default="")
     texte = models.TextField(default="")
     bFini = models.BooleanField(default=False)

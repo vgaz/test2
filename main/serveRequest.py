@@ -21,9 +21,9 @@ def serveRequest(request):
     if cde == "getEvtsPlant": 
         try:
             l_evts = Evenement.objects.filter(plant_base_id = int(request.POST.get("id", 0)))
-            s_ = ','.join(['{"id":"%d","nom":"%s","date":"%s","type":"%s"}'%(   item.id, item.nom, 
-                                                                      item.date.strftime(Constant.FORMAT_DATE), 
-                                                                      item.type) for item in l_evts])           
+            s_ = ','.join(['{"id":"%d","nom":"%s","date":"%s","duree":"%d","type":"%s"}'%(   item.id, item.nom, 
+                                                                                             item.date.strftime(Constant.FORMAT_DATE), item.duree,
+                                                                                             item.type) for item in l_evts])           
             s_json = '{"status":"true","l_evts":[%s]}'% s_
         except:
             print(__name__ + ': ' + str(sys.exc_info()[1]) )

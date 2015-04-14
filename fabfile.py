@@ -30,7 +30,7 @@ def sauveTables():
     local("python manage.py dumpdata --indent 2 > ./svg/%s"%s_file)
  
 def chargeTables(s_filePath):
-    """chargement d'une sauvegarde"""
+    """chargement d'une sauvegarde. Usage fab chargeTables:./svg/monFichierDeSauvegarde.json"""
     print s_filePath
     local("python manage.py loaddata %s"%s_filePath)
 

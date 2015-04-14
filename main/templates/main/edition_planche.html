@@ -76,7 +76,7 @@ function majListEvts(id_plant)
                 s_tag = jsonTitreTypeEvt["debut"] +  " "
             if (jsonRep.l_evts[ii].type == "fin")
                 s_tag = jsonTitreTypeEvt["fin"] +  " "
-            s_evts += "<tr><td><b>" + s_tag +"</b> " + jsonRep.l_evts[ii].date + " "  + jsonRep.l_evts[ii].nom + "</td>"
+            s_evts += "<tr><td><b>" + s_tag +"</b> " + jsonRep.l_evts[ii].date + " (" + jsonRep.l_evts[ii].duree + "j) "  + jsonRep.l_evts[ii].nom + "</td>"
             s_evts += "<td><a href='javascript:editeEvenement(" + jsonRep.l_evts[ii].id + ")'><img align='right' src='{{STATIC_URL}}images/editor.png' title='Editer'></a></td>"
             s_evts += "<td><a href='javascript:supprimeEvenement(" + jsonRep.l_evts[ii].id + ")'><img align='right'src='{{STATIC_URL}}images/toDelete.jpeg' title='Supprimer'></a></td></tr>"
             }
