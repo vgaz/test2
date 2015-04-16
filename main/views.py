@@ -159,12 +159,12 @@ def editionPlanche(request):
 
 #################################################
 
-def var(request):
-
+def tab_varietes(request):
+    l_vars = Variete.objects.filter(diametre_cm__isnull=False)
     return render(request,
-                 'main/var.html',
+                 'main/tab_varietes.html',
                  {
-                  "l_vars":Variete.objects.all(),
+                  "l_vars":l_vars,
                   "l_fams":Famille.objects.all(),
                   "appVersion":Constant.APP_VERSION
                   })
