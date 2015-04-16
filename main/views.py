@@ -171,7 +171,7 @@ def var(request):
     
 #################################################
 
-def quiz(request):
+def quizFamilles(request):
     message = ""
     
     form = forms.FormFamilyQuiz(request.POST or None)
@@ -198,9 +198,9 @@ def quiz(request):
         ## restart a new form
         form = forms.FormFamilyQuiz()
 
-    form.var = random(Variete.objects.filter(famille__isnull=False).values("nom", "id"))
+    form.var = random(Variete.objects.filter(famille__isnull=False, diametre_cm__isnull=False).values("nom", "id"))
 
-    return render(request, 'main/quiz.html',
+    return render(request, 'main/quizFamilles.html',
             {
              "message" : message,
              "form": form,

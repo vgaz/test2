@@ -26,7 +26,7 @@ class Command(BaseCommand):
             
             va = unicode(l.get("variete").decode('utf-8')).lower().strip()            
             fam = unicode(l.get("famille","").decode('utf-8')).lower().strip()
-            l_fams = [unicode(f) for f in  Famille.objects.all().values_list("nom", flat=True)]
+            l_fams = [unicode(f) for f in Famille.objects.all().values_list("nom", flat=True)]
 
             if fam and fam not in l_fams:
                 hFam = Famille()
@@ -41,7 +41,7 @@ class Command(BaseCommand):
                 print "ajout %s"%va
             
             if va and fam: 
-                hVa = Variete.objects.get(nom = va)
+                hVa = Variete.objects.get(nom=va)
                 hVa.famille = Famille.objects.get(nom=fam)
                 hVa.save()
                 print "%s = %s"%(va, fam)
@@ -81,13 +81,21 @@ class Command(BaseCommand):
                     v.save()
                     print "ajout" , v
 
-            v = Variete.objects.get( nom = variet )
+            v = Variete.objects.get(nom = variet)
                 
             ## mise à jour des variétés qui peuvent ou pas aller avec celle-ci
             for var in l_varAvec:
                 v.avec.add(Variete.objects.get( nom = var ))
             for var in l_varSans:
                 v.sans.add(Variete.objects.get( nom = var ))
+            
+            ## 
+            v.date_min_plantation = "20/03"
+            v.date_max_plantation = "20/05"
+            v.duree_pousse_min_j = 60
+            v.duree_pousse_max_j = 90
+            v.masse_utile_kg = 0.5
+            v.diametre_cm = 30
 
             v.save()
 

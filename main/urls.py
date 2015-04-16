@@ -12,7 +12,7 @@ urlpatterns = patterns('',
 
     url(r'^var/', 'main.views.var', name='tab_varietes'),
     url(r'^request/', 'main.serveRequest.serveRequest'),
-    url(r'^quiz/', 'main.views.quiz', name='quiz'),
+    url(r'^quizFamilles/', 'main.views.quizFamilles', name='quizFamilles'),
     
     url(r'^edition_planche/', 'main.views.editionPlanche', name='edition_planche'),
     url(r'^chrono_planche/', 'main.views.chronoPlanche', name='chrono_planche'),

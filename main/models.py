@@ -19,6 +19,13 @@ class Variete(models.Model):
     famille = models.ForeignKey(Famille, null=True, blank=True)
     avec = models.ManyToManyField("self", related_name="avec", null=True, blank=True)
     sans = models.ManyToManyField("self", related_name="sans", null=True, blank=True)
+    date_min_plantation = models.CharField("date (jj/mm) de début de plantation", max_length=10)
+    date_max_plantation = models.CharField("date (jj/mm) de fin de plantation", max_length=10)
+    duree_pousse_min_j = models.IntegerField("durée en terre mini (jours)")
+    duree_pousse_max_j = models.IntegerField("durée en terre maxi (jours)")
+    masse_utile_kg = models.FloatField()
+    diametre_cm = models.IntegerField("diamètre (cm)")
+
     image = models.ImageField()
 #    objects = MyManager()  ## objects est le nom par defaut du manager, ici surcharge eventuelle
     
