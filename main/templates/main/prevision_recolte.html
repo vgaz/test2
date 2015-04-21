@@ -13,13 +13,13 @@
     <table>
         <tr><th>Produits/Semaines</th>
             {% for semaine in l_semaines %}
-                <td align="center">{{semaine}}</td>
+                <td align="center">du {{semaine.0|date:'d/m/Y'}}<br/> au {{semaine.1|date:'d/m/Y'}}</td>
             {% endfor %}
         </tr>
         {% for var in l_vars %}
         <tr><td>{{var.nom}}</td>
             {% for semaine in l_semaines %}
-                    <td><input type="text" name="{{var.nom}}__{{semaine}}"/></td>
+                    <td><input style="width: 100px" type="text" name="{{var.nom}}__{{semaine}}"/></td>
             {% endfor %}
 
         </tr>
