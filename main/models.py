@@ -3,7 +3,7 @@ from django.db import models
 import datetime
 
 class Famille(models.Model):
-
+    """famille associée à la plante"""
     nom = models.CharField(max_length=100)
     
     class Meta: 
@@ -12,19 +12,17 @@ class Famille(models.Model):
     def __unicode__(self):
         return self.nom
     
-
 class Variete(models.Model):
-
+    """variété de plante"""
     nom = models.CharField(max_length=100)
-    famille = models.ForeignKey(Famille, null=True, blank=True)
+    famille = models.ForeignKey(Famille,  null=True, blank=True)
     avec = models.ManyToManyField("self", related_name="avec", null=True, blank=True)
     sans = models.ManyToManyField("self", related_name="sans", null=True, blank=True)
-    date_min_plantation = models.CharField("date (jj/mm) de début de plantation", max_length=10)
-    date_max_plantation = models.CharField("date (jj/mm) de fin de plantation", max_length=10)
-    duree_pousse_min_j = models.IntegerField("durée en terre mini (jours)")
-    duree_pousse_max_j = models.IntegerField("durée en terre maxi (jours)")
-    masse_utile_kg = models.FloatField()
-    diametre_cm = models.IntegerField("diamètre (cm)")
+    date_min_plantation = models.CharField("date (jj/mm) de début de plantation", max_length=10, default="0/0")
+    date_max_plantation = models.CharField("date (jj/mm) de fin de plantation", max_length=10, default="0/0")
+    duree_avant_recolte_j = models.IntegerField("durée en terre avant récolte (jours)", default=0)
+    prod_hebdo_moy_g = models.CommaSeparatedIntegerField("suite de production hebdomadaire moyenne (grammes)", max_length=20, default="0,0") ##attention, pour les légumes "à la pièce" ( choux, salades..), ne saisir qu'une valeur 
+    diametre_cm = models.IntegerField("diamètre (cm)", default=0)
 
     image = models.ImageField()
 #    objects = MyManager()  ## objects est le nom par defaut du manager, ici surcharge eventuelle

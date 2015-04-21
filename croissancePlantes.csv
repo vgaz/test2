@@ -1,48 +1,11 @@
-variete,duree_jours
-ail,0
-aubergine,100,
-basilic,60
-"bette à carde",60
-"betterave",60
-brocoli,75
-carotte,0
-céleri à côtes,0
-céleri-rave,0
-cerfeuil,0
-chicorée,0
-chou-fleur,0
-chou-rave,0
-chou,0
-chou de Bruxelles,0
-citrouille,0
-concombre,0
-coriandre,"pomme de terre",
-cornichon,"aneth, choux, harice de terre, tomate"
-courge,"basilic, capucine, laitue, maïs, melon, fève, menthe","pomme de terre"
-courgette,"radis, menthe, pois, radis, haricots",pomme de terre
-epinard,"céleri, choux, fève, fraise, haricot, mte, poivron"
-fenouil,"asperge, céleri, concombre, cornichon, courge, potiron","choux, haricot, pois, tomate"
-fève,"ail, carotte, céleri, radis","betterave, pomme de terre"
-fraise,"ail, haricot, laitue, oignon, poireau, thym",choux
-haricot,"aubergine, carotte, céleri,e, fenouil, oignon"
-haricot rame,"aubergine, carotte, céleri, choux, concombre
-laitue,"artichaut, betterave, carotte, choux, chou-fleur, concombre, cornichon, courge, fraise, oignon, poireau, pois, radis, trèfle","épinard, persil, tournesol"
-mâche,poireau,
-maïs,"concombre, cornichon, courge, fève, haricot, pois, potiron, tomate","betterave, céleri, laitue, menthe, romarin"
-melon,"maïs, tournesol",
-menthe,"choux, navet, pois, radis, tomate",
-navet,"laitue, menthe, pois, romarin",ail
-oignon,"betterave, camomille, carotte, fenouil, fraise, laitue, poireau, sarriette, tomate, chou, pomme de terre","chou, fève, haricot, pois, pomme de terre"
-panais,radis,aneth
-persil,"poireau, radis, tomate","chou, haricot, laitue, pois"
-piment,"aubergine, tomate, basilic, carotte, marjolaine, oignon, origan",fenouil
-poireau,"betterave, carotte, céleri, épinard, laitue, oignon, pomme de terre, tomate","choux, haricot, pois, fève, brocoli"
-pois,"asperge, aubergine, carotte, céleri, chou, concombre, cornichon, fève, laitue, maïs, navet, radis, épinard, tomate, haricot, courgette, céleri, pomme de terre hâtive, menthe","ail, échalote, oignon, persil, poireau, ciboulette, pommes de terre tardive"
-pomme de terre,"capucine, céleri, choux, fève, haricot, pois, raifort, ail, maïs, laitue, oignon, pétunia, œillet d'Inde, radis, potiron, courgette","aubergine, concombre, cornichon, courge, framboisier, oignon, pommier, tomate, tournesol, citrouille, courgette, épinard, potiron"
-potiron,"laitue, maïs, melon",pomme de terre
-radis,"ail, carotte, cresson, haricot, laitue, persil, pois, tomate, fève, chou, chou-fleur, concombre, courge, courgette","chou, courge, pomme de terre, vigne, hysope"
-raifort,pomme de terre,
-romarin,"carotte, choux, fenouil, persil, pois, pomme de terre, thym, tomate",
-tomate,"aneth, asperge, basilic, carotte, céleri, ciboulette chinoise, maïs, oignon, persil, radis, pois, sauge, poireau, souci, oeillet d'inde (tagète), capucine","betterave, fenouil, haricot, pois, pomme de terre, chou, concombre"
-topinambour,pomme de terre,
-Tournesol,"concombre, cornichon","laitue, maïs, pomme de terre"
+variete,date_min_plantation,date_max_plantation,duree_avant_recolte_j,diametre_cm,prod_hebdo_moy_g
+ail,"20/03","20/05",120,20,"100,100,100"
+artichaut,"20/03","20/05",100,50,"300"
+aubergine,"20/03","20/05",100,60,"900"
+betterave,"20/03","20/05",60,25,"120,120"
+brocoli,"20/03","20/05",150,60,"450"
+carotte,"20/03","20/05",90,13,"45,45,45"
+chou-fleur,"20/03","20/05",150,600,"1500"
+radis,"20/03","20/05",20,10,"5,5"
+salade chicorée,"20/03","20/05",30,20,"250"
+tomate,"20/03","20/05",90,60,"100,150,150,150,100,100"

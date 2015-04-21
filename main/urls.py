@@ -10,12 +10,13 @@ import Constant, settings
 
 urlpatterns = patterns('',
 
-    url(r'^varietes/', 'main.views.tab_varietes', name='tab_varietes'),
+    url(r'^tab_varietes/', 'main.views.tab_varietes', name='tab_varietes'),
     url(r'^request/', 'main.serveRequest.serveRequest'),
     url(r'^quizFamilles/', 'main.views.quizFamilles', name='quizFamilles'),
     
     url(r'^edition_planche/', 'main.views.editionPlanche', name='edition_planche'),
     url(r'^chrono_planche/', 'main.views.chronoPlanche', name='chrono_planche'),
+    url(r'^prevision_recolte/', 'main.views.prevision_recolte', name='prevision_recolte'),
 
     url(r'^creation_planche/', 
         CreationPlanche.as_view() ,  

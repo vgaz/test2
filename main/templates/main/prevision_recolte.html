@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Prévision des récoltes{% endblock %}
+
+{% block content %}
+
+<div class="BlueFrame" >
+    
+    <form action="" method="POST">
+    <p>Visionnage du <input style="width: 100px" type="text" name="date_debut_vue" value="{{date_debut_vue|date:'d/m/Y'}}" /> au <input style="width: 100px" type="text" name="date_fin_vue" value="{{date_fin_vue|date:'d/m/Y'}}" /></p>
+    {% csrf_token %}
+
+    <table>
+        <tr><th>Produits/Semaines</th>
+            {% for semaine in l_semaines %}
+                <td align="center">{{semaine}}</td>
+            {% endfor %}
+        </tr>
+        {% for var in l_vars %}
+        <tr><td>{{var.nom}}</td>
+            {% for semaine in l_semaines %}
+                    <td><input type="text" name="{{var.nom}}__{{semaine}}"/></td>
+            {% endfor %}
+
+        </tr>
+        {% endfor %}
+    </table>
+    <input type="submit" value="OK" />
+
+    </form>
+</div>
+{% endblock %}

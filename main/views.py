@@ -159,6 +159,30 @@ def editionPlanche(request):
 
 #################################################
 
+def prevision_recolte(request):
+    l_vars = Variete.objects.exclude(diametre_cm = 0)
+    
+    delta20h = datetime.timedelta(hours=20)
+    date_du_jour = datetime.datetime.now()
+    if request.POST.get("date_debut_vue",""):
+        date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue", ""), Constant.FORMAT_DATE)
+        date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue", ""), Constant.FORMAT_DATE) + delta20h
+    else:
+        delta = datetime.timedelta(days=60)
+        date_debut_vue = date_du_jour - delta
+        date_fin_vue = date_du_jour + delta + delta20h
+    return render(request,
+                 'main/prevision_recolte.html',
+                 {
+                  "appVersion":Constant.APP_VERSION,
+                  "date_debut_vue": date_debut_vue,
+                  "date_fin_vue": date_fin_vue,
+                  "l_vars":l_vars,
+                  "l_semaines":range(2,7)
+                  })
+    
+#################################################
+
 def tab_varietes(request):
     l_vars = Variete.objects.filter(diametre_cm__isnull=False)
     return render(request,
