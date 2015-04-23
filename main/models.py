@@ -2,6 +2,7 @@
 from django.db import models
 import datetime
 
+
 class Famille(models.Model):
     """famille associée à la plante"""
     nom = models.CharField(max_length=100)
@@ -91,4 +92,16 @@ class Evenement(models.Model):
         
     def __unicode__(self):
         return "%d %s %s"%(self.plant_base_id, self.date, self.type)
+
+class Prevision(models.Model):
+    """Prévision des récoltes"""
+    variete = models.ForeignKey(Variete)
+    date_semaine = models.DateTimeField("date de debut de semaine")
+    quantite = models.PositiveIntegerField("quantité en kg")
+     
+    class Meta: 
+        ordering = ["date_semaine"]
+            
+    def __unicode__(self):
+        return "sem du %s : %s : %d kg"%(self.date_semaine, self.variete.nom, self.quantite)
     

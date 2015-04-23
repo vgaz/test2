@@ -13,7 +13,7 @@ from django.contrib.messages.storage.base import Message
 import datetime
 
 import Constant
-from models import Evenement, Planche, PlantBase, TypeEvenement
+from models import Evenement, Planche, PlantBase, Prevision, TypeEvenement
 from forms import PlancheForm
 
 #################################################
@@ -160,25 +160,38 @@ def editionPlanche(request):
 #################################################
 
 def prevision_recolte(request):
-    
+
+    if request.POST:
+        for k, v in request.POST.items():
+            if k.startswith("p__") and v:
+                _, date_semaine, var = k.split("__")
+                previs = Prevision()
+                previs.variete = Variete.objects.get(id=var)
+                previs.date_semaine = date_semaine
+                previs.quantite_kg = int(v)
+                print previs
+                previs.save()
+            
     l_vars = Variete.objects.exclude(diametre_cm = 0)
-    l_semaines = []
     
+    ## récup de la fenetre de temps
     delta20h = datetime.timedelta(hours=20)
     date_du_jour = datetime.datetime.now()
     if request.POST.get("date_debut_vue",""):
         date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue", ""), Constant.FORMAT_DATE)
         date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue", ""), Constant.FORMAT_DATE) + delta20h
-
     else:
-        delta = datetime.timedelta(days=60)
+        delta = datetime.timedelta(days=30)
         date_debut_vue = date_du_jour - delta
         date_fin_vue = date_du_jour + delta + delta20h
-        
-    date_debut_sem = date_debut_vue
+    
+    ## création de la liste des semaines     
+    # on recadre sur le lundi pour démarrer en debut de semaine
+    l_semaines = []
+    date_debut_sem = date_debut_vue - datetime.timedelta(days=date_debut_vue.weekday()) 
     while True:
-        date_fin_sem = date_debut_sem + datetime.timedelta(days=7)
-        l_semaines.append((date_debut_sem, date_fin_sem))
+        date_fin_sem = date_debut_sem + datetime.timedelta(days=6)
+        l_semaines.append((date_debut_sem.isocalendar(), date_debut_sem, date_fin_sem))
         if date_fin_sem > date_fin_vue: 
             break
         date_debut_sem = date_fin_sem + datetime.timedelta(days=1)
@@ -190,7 +203,8 @@ def prevision_recolte(request):
                   "date_debut_vue": date_debut_vue,
                   "date_fin_vue": date_fin_vue,
                   "l_vars":l_vars,
-                  "l_semaines":l_semaines
+                  "l_semaines":l_semaines,
+                  "info":""
                   })
     
 #################################################

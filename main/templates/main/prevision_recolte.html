@@ -5,27 +5,29 @@
 {% block content %}
 
 <div class="BlueFrame" >
-    
+    {{info}}
     <form action="" method="POST">
-    <p>Visionnage du <input style="width: 100px" type="text" name="date_debut_vue" value="{{date_debut_vue|date:'d/m/Y'}}" /> au <input style="width: 100px" type="text" name="date_fin_vue" value="{{date_fin_vue|date:'d/m/Y'}}" /></p>
+    <p>Visionnage du <input style="width:100px" type="text" name="date_debut_vue" value="{{date_debut_vue|date:'d/m/Y'}}" /> au <input style="width: 100px" type="text" name="date_fin_vue" value="{{date_fin_vue|date:'d/m/Y'}}" /></p>
     {% csrf_token %}
 
     <table>
         <tr><th>Produits/Semaines</th>
             {% for semaine in l_semaines %}
-                <td align="center">du {{semaine.0|date:'d/m/Y'}}<br/> au {{semaine.1|date:'d/m/Y'}}</td>
+                <td align="center">Semaine {{semaine.0.1}}/{{semaine.0.0}}<br/>du {{semaine.1|date:'d/m/Y'}}<br/>au {{semaine.2|date:'d/m/Y'}}</td>
             {% endfor %}
         </tr>
         {% for var in l_vars %}
         <tr><td>{{var.nom}}</td>
             {% for semaine in l_semaines %}
-                    <td><input style="width: 100px" type="text" name="{{var.nom}}__{{semaine}}"/></td>
+                    <td><input style="width:100px" type="text" name="p__{{semaine.1|date:'Y-m-d'}}__{{var.id}}"/></td>
             {% endfor %}
 
         </tr>
         {% endfor %}
     </table>
-    <input type="submit" value="OK" />
+    <br/>
+    <input type="submit" value="Enregistrer" />
+    <input type="submit" value="Programmer les plantations" />
 
     </form>
 </div>
