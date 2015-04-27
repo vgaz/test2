@@ -17,7 +17,7 @@ class Famille(models.Model):
 class Variete(models.Model):
     """variété de plante"""
     nom = models.CharField(max_length=100)
-    famille = models.ForeignKey(Famille,  null=True, blank=True)
+    famille = models.ForeignKey(Famille, null=True, blank=True)
     avec = models.ManyToManyField("self", related_name="avec", null=True, blank=True)
     sans = models.ManyToManyField("self", related_name="sans", null=True, blank=True)
     date_min_plantation = models.CharField("date (jj/mm) de début de plantation", max_length=10, default="0/0")
@@ -38,7 +38,7 @@ class Variete(models.Model):
 class Planche(models.Model):
     """object composant la structure de base qui sera dupliquée sur toute la longueur de la planche """
     
-    num = models.IntegerField(unique=True)
+    num = models.PositiveIntegerField(unique=True)
     nom = models.CharField(max_length=100, default="")
     longueur_m = models.IntegerField()
     largeur_cm = models.IntegerField()
@@ -58,7 +58,7 @@ class PlantBase(models.Model):
     hauteur_cm = models.PositiveIntegerField('hauteur cm')
     coord_x_cm = models.PositiveIntegerField("pos x cm")
     coord_y_cm = models.PositiveIntegerField("pos y cm")
-    planche = models.ForeignKey('Planche')
+    planche = models.ForeignKey('Planche',  null=True, blank=True)
        
     def __unicode__(self):
         return "%d %s (%d), %d x %d, pos: %d %d sur planche %d" %( self.id,  self.variete, 

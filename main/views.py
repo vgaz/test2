@@ -166,7 +166,20 @@ def editionPlanche(request):
 #################################################
 
 def prevision_recolte(request):
-    
+
+    ## récup de la fenetre de temps
+    delta20h = datetime.timedelta(hours=20)
+    date_du_jour = datetime.datetime.now()
+    if request.POST.get("date_debut_vue",""):
+        date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue", ""), Constant.FORMAT_DATE)
+        date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue", ""), Constant.FORMAT_DATE) + delta20h
+    else:
+        delta = datetime.timedelta(days=30)
+        date_debut_vue = date_du_jour - delta
+        date_fin_vue = date_du_jour + delta + delta20h
+    date_debut_sem_vue = date_debut_vue - datetime.timedelta(days=date_debut_vue.weekday()) 
+    date_fin_sem_vue = date_fin_vue + datetime.timedelta(days= 6 - date_fin_vue.weekday()) 
+            
     ## sauvegarde des prévision des récolte
     if request.POST:
         for k, v in request.POST.items():
@@ -180,31 +193,21 @@ def prevision_recolte(request):
                     obj.date_semaine = ds
                 masse = int(v)
                 if masse == 0: ## issu d'un enregistrement ayant précédement une masse différente de zéro
-                    print obj, " retiré"
                     obj.delete()
                 else:
                     obj.quantite_kg = masse
                     obj.save()
-
-                        
-    l_vars = Variete.objects.exclude(diametre_cm = 0)
+        
+        if request.POST.get("option_planif", ""):
+            print "planif"
+            for prev in Prevision.objects.filter(date_semaine__gte = date_debut_sem_vue, date_semaine__lte = date_fin_sem_vue):
+                pass
     
-    ## récup de la fenetre de temps
-    delta20h = datetime.timedelta(hours=20)
-    date_du_jour = datetime.datetime.now()
-    if request.POST.get("date_debut_vue",""):
-        date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue", ""), Constant.FORMAT_DATE)
-        date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue", ""), Constant.FORMAT_DATE) + delta20h
-    else:
-        delta = datetime.timedelta(days=30)
-        date_debut_vue = date_du_jour - delta
-        date_fin_vue = date_du_jour + delta + delta20h
+    l_vars = Variete.objects.exclude(diametre_cm = 0)
     
     ## création de la liste des semaines     
     # on recadre sur le lundi pour démarrer en debut de semaine
     l_semaines = []
-    date_debut_sem_vue = date_debut_vue - datetime.timedelta(days=date_debut_vue.weekday()) 
-    date_fin_sem_vue = date_fin_vue + datetime.timedelta(days= 6 - date_fin_vue.weekday()) 
     date_debut_sem = date_debut_sem_vue
     while True:
         date_fin_sem = date_debut_sem + datetime.timedelta(days=6)

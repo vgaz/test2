@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Prévision de récoltes{% endblock %}
+{% block title %}Prévision de récoltes par semaine (en Kg){% endblock %}
 
 {% block javascript %}
 
@@ -16,6 +16,8 @@ function init()
             document.getElementById(s_id).value = tab_previsions[ii][2]
             }
     }
+    
+
 </script>
 
 {% endblock %}
@@ -43,10 +45,15 @@ function init()
 
         </tr>
         {% endfor %}
+        <tr><th>Total (kg)</th>
+            {% for semaine in l_semaines %}
+            <td><div id="t__{{semaine.1|date:'Y-m-d'}}"> </div></td>
+            {% endfor %}
+        </tr>
     </table>
     <br/>
-    <input type="submit" value="Enregistrer" />
-    <input type="submit" value="Programmer les plantations" />
+    <input type="submit" name="commande" value="Enregistrer">
+    Planifier les plantations<input type="checkbox" name="option_planif" />
 
     </form>
 </div>
