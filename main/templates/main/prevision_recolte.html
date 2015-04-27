@@ -1,6 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}Prévision des récoltes{% endblock %}
+{% block title %}Prévision de récoltes{% endblock %}
+
+{% block javascript %}
+
+<script type="text/javascript">
+tab_previsions = {{tab_previsions|safe}}
+
+function init()
+    {
+    // peuplement du tableau 
+    for(ii=0;ii<tab_previsions.length;ii++)
+            {
+            s_id = ["p", tab_previsions[ii][0], tab_previsions[ii][1]].join("__") 
+            document.getElementById(s_id).value = tab_previsions[ii][2]
+            }
+    }
+</script>
+
+{% endblock %}
+
 
 {% block content %}
 
@@ -13,13 +32,13 @@
     <table>
         <tr><th>Produits/Semaines</th>
             {% for semaine in l_semaines %}
-                <td align="center">Semaine {{semaine.0.1}}/{{semaine.0.0}}<br/>du {{semaine.1|date:'d/m/Y'}}<br/>au {{semaine.2|date:'d/m/Y'}}</td>
+                <td align="center">Semaine {{semaine.0.1}}<br/>du {{semaine.1|date:'d/m/Y'}}<br/>au {{semaine.2|date:'d/m/Y'}}</td>
             {% endfor %}
         </tr>
         {% for var in l_vars %}
         <tr><td>{{var.nom}}</td>
             {% for semaine in l_semaines %}
-                    <td><input style="width:100px" type="text" name="p__{{semaine.1|date:'Y-m-d'}}__{{var.id}}"/></td>
+                    <td><input style="width:100px;font-weight:bold;text-align: center" type="text" name="p__{{semaine.1|date:'Y-m-d'}}__{{var.id}}" id="p__{{semaine.1|date:'Y-m-d'}}__{{var.id}}"/></td>
             {% endfor %}
 
         </tr>

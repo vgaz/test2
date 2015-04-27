@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 import datetime
+from utils import manager
 
 
 class Famille(models.Model):
@@ -26,7 +27,6 @@ class Variete(models.Model):
     diametre_cm = models.IntegerField("diamètre (cm)", default=0)
 
     image = models.ImageField()
-#    objects = MyManager()  ## objects est le nom par defaut du manager, ici surcharge eventuelle
     
     class Meta: 
         ordering = ['nom']
@@ -93,15 +93,17 @@ class Evenement(models.Model):
     def __unicode__(self):
         return "%d %s %s"%(self.plant_base_id, self.date, self.type)
 
+
 class Prevision(models.Model):
     """Prévision des récoltes"""
     variete = models.ForeignKey(Variete)
     date_semaine = models.DateTimeField("date de debut de semaine")
-    quantite = models.PositiveIntegerField("quantité en kg")
-     
+    quantite_kg = models.PositiveIntegerField("quantité en kg", default=0)
+    objects = manager.BaseManager()
+    
     class Meta: 
         ordering = ["date_semaine"]
             
     def __unicode__(self):
-        return "sem du %s : %s : %d kg"%(self.date_semaine, self.variete.nom, self.quantite)
+        return "sem du %s : %s : %d kg"%(self.date_semaine, self.variete.nom, self.quantite_kg)
     

@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from models import Variete, Famille
 from django.template.defaultfilters import random
-from django.core import serializers
+
 import forms
 from django.contrib.messages.storage.base import Message
 import datetime
@@ -17,6 +17,12 @@ from models import Evenement, Planche, PlantBase, Prevision, TypeEvenement
 from forms import PlancheForm
 
 #################################################
+def get_or_none(model, *args, **kwargs):
+    try:
+        return model.objects.get(*args, **kwargs)
+    except model.DoesNotExist:
+        return None
+
 
 def home(request):
     l_planches = Planche.objects.all()
@@ -33,7 +39,7 @@ def home(request):
 def chronoPlanche(request):
 
     try:
-        laPlanche = Planche.objects.get(num = int(request.POST.get("num_planche", request.GET.get("num_planche", 0))))
+        laPlanche, bRet = Planche.objects.get(num = int(request.POST.get("num_planche", request.GET.get("num_planche", 0))))
         print laPlanche
     except:
         s_msg = "Planche non trouvée... Est elle bien existante ?"
@@ -160,18 +166,27 @@ def editionPlanche(request):
 #################################################
 
 def prevision_recolte(request):
-
+    
+    ## sauvegarde des prévision des récolte
     if request.POST:
         for k, v in request.POST.items():
+            ## gestion prévisions de récoltes
             if k.startswith("p__") and v:
-                _, date_semaine, var = k.split("__")
-                previs = Prevision()
-                previs.variete = Variete.objects.get(id=var)
-                previs.date_semaine = date_semaine
-                previs.quantite_kg = int(v)
-                print previs
-                previs.save()
-            
+                _, ds, var = k.split("__")
+                obj = Prevision.objects.get_or_none(variete_id=var, date_semaine = ds)
+                if not obj:
+                    obj=Prevision()
+                    obj.variete_id = var
+                    obj.date_semaine = ds
+                masse = int(v)
+                if masse == 0: ## issu d'un enregistrement ayant précédement une masse différente de zéro
+                    print obj, " retiré"
+                    obj.delete()
+                else:
+                    obj.quantite_kg = masse
+                    obj.save()
+
+                        
     l_vars = Variete.objects.exclude(diametre_cm = 0)
     
     ## récup de la fenetre de temps
@@ -188,14 +203,20 @@ def prevision_recolte(request):
     ## création de la liste des semaines     
     # on recadre sur le lundi pour démarrer en debut de semaine
     l_semaines = []
-    date_debut_sem = date_debut_vue - datetime.timedelta(days=date_debut_vue.weekday()) 
+    date_debut_sem_vue = date_debut_vue - datetime.timedelta(days=date_debut_vue.weekday()) 
+    date_fin_sem_vue = date_fin_vue + datetime.timedelta(days= 6 - date_fin_vue.weekday()) 
+    date_debut_sem = date_debut_sem_vue
     while True:
         date_fin_sem = date_debut_sem + datetime.timedelta(days=6)
         l_semaines.append((date_debut_sem.isocalendar(), date_debut_sem, date_fin_sem))
         if date_fin_sem > date_fin_vue: 
             break
         date_debut_sem = date_fin_sem + datetime.timedelta(days=1)
-            
+    
+    tab_previsions = "[" 
+    for prev in Prevision.objects.filter(date_semaine__gte = date_debut_sem_vue, date_semaine__lte = date_fin_sem_vue):
+        tab_previsions += "['%s', %d, %d],"%(prev.date_semaine.strftime("%Y-%m-%d"), prev.variete_id, prev.quantite_kg)
+    tab_previsions += "]" 
     return render(request,
                  'main/prevision_recolte.html',
                  {
@@ -204,6 +225,7 @@ def prevision_recolte(request):
                   "date_fin_vue": date_fin_vue,
                   "l_vars":l_vars,
                   "l_semaines":l_semaines,
+                  "tab_previsions" :tab_previsions,
                   "info":""
                   })
     
