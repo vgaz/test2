@@ -755,34 +755,6 @@ def changeDivContent(resultFilePath, divId, content):
     f.write(xmlstr)
     f.close()
 
-##########################################################################################
-def getSaintsList():
-    
-    l_saint=[]
-    Saints = ["Jour de l'an|St Basile|Ste Geneviève|St Odilon|St Edouard|Ste Mélaine|St Raymond|St Lucien|Ste Alix|St Guillaume|St Paulin|Ste Tatiana|Ste Yvette|Ste Nina|St Rémi|St Marcel|Ste Roseline|Ste Prisca|St Marius|St Sébastien|Ste Agnès|St Vincent|St Barnard|St François de Sales|St Apollos|Ste Paule|Ste Angèle|St Thomas d'Aquin|St Gildas|Ste Martine|Ste Marcelle",
-              "Ste Ella|St Théophane|St Blaise|Ste Véronique|Ste Agathe|St Gaston|Ste Eugénie|Ste Jacqueline|Ste Apolline|St Arnaud|ND de Lourdes|St Félix|Ste Béatrice|St Valentin|St Claude|Ste Julienne|St Alexis|Ste Bernadette|St Gabin|Ste Aimée|St Damien|Ste Isabelle|St Lazare|St Modeste|St Roméo|St Nestor|Ste Honorine|St Romain|St Auguste",
-              "St Aubin|St Jaouen|St Gwénola|St Casimir|St Olive|Ste Colette|Ste Félicité|St Jean de Dieu|Ste Françoise|St Vivien|Ste Rosine|Ste Justine|St Rodrigue|Ste Mathilde|Ste Louise|Ste Bénédicte|St Patrick|St Cyrille|St Joseph|St Herbert|Ste Clémence|Ste Léa|St Victorien|Ste Karine|Annonciation|Ste Lara|St Habib|St Gontran|Ste Gwladys|St Amédée|St Benjamin",
-              "St Hugues|Ste Sandrine|St Richard|St Isidore|Ste Irène|St Marcellin|St Jean-Baptiste|Ste Julie|St Gautier|St Fulbert|St Stanislas|St Jules|Ste Ida|St Maxime|St Paterne|St Benoît-Joseph|St Anicet|St Parfait|Ste Emma|Ste Odette|St Anselme|St Alexandre|St Georges|St Fidèle|St Marc|Ste Alida|Ste Zita|Ste Valérie|Ste Catherine|St Robert",
-              "St Jeremie|St Boris|St Philippe|St Sylvain|Ste Judith|Ste Prudence|Ste Gisèle|St Désiré|Ste Pacôme|Ste Solange|Ste Estelle|St Achille|Ste Rolande|St Matthias|Ste Denise|St Honoré|St Pascal|St Eric|St Yves|St Bernardin|St Constantin|St Emile|St Didier|St Donatien|Ste Sophie|St Bérenger|St Augustin|St Germain|St Aymard|St Ferdinand|Ste Perrette",
-              "St Justin|Ste Blandine|St Kevin|Ste Clotilde|St Igor|St Norbert|St Gilbert|St Médard|Ste Diane|Ste Trinité|St Barnabé|St Guy|St Antoine|St Elisée|Ste Germaine|St Régis|St Hervé|St Léonce|St Romuald|St Silvère|St Rodolphe|St Alban|Ste Audrey|St Yann|St Prosper|St Anthelme|St Fernand|St Irénée|St Pierre/St Paul|St Martial",
-              "St Thierry|St Martinien|St Thomas|St Florent|St Antoine|Ste Mariette|St Eliane|St Thibaud|Ste Amandine|St Ulric|St Benoît|St Olivier|St Henri/St Joël|St Camille/Fête Nationale|St Donald|Ste Carmen|Ste Charlotte|St Frédéric|St Arsène|Ste Marina|St Victor|Ste Marie-Madeleine|Ste Brigitte|Ste Christine|St Jacques|Ste Anne|Ste Nathalie|St Samson|Ste Marthe|Ste Juliette|St Ignace",
-              "St Alphonse|St Julien|Ste Lydie|St Jean-Marie|St Abel|St Octavien|St Gaétan|St Dominique|St Amour|St Laurent|Ste Claire|Ste Clarisse|St Hippolyte|St Evrard|Ste Marie/Assomption|St Armel|St Hyacinthe|Ste Hélène|St Jean-Eudes|St Bernard|St Christophe|St Fabrice|Ste Rose|St Barthélémy|St Louis|Ste Natacha|Ste Monique|St Augustin|Ste Sabine|St Fiacre|St Aristide",
-              "St Gilles|Ste Ingrid|St Grégoire|Ste Rosalie|Ste Raïssa|St Bertrand|Ste Reine|St Adrien|St Alain|Ste Inès|St Adelphe|St Apollinaire|St Aimé|St Materne|St Roland|Ste Edith|St Renaud|Ste Nadège|Ste Emilie|St Davy|St Matthieu|St Maurice|St Constant|Ste Thècle|St Hermann|St Côme/St Damien|St Vincent de Paul|St Venceslas|Sts Michel|St Jérôme",
-              "Ste Thérèse|St Léger|St Gérard|St François|Ste Fleur|St Bruno|St Serge|Ste Pélagie|St Denis|St Ghislain|St Firmin|St Wilfrid|St Géraud|St Juste|Ste Thérèse|Ste Edwige|St Baudouin|St Luc|St René Goupil|Ste Adeline|Ste Céline|Ste Elodie|St Jean de Capistran|St Florentin|St Crépin|St Dimitri|Ste Emeline|St Simon|St Narcisse|Ste Bienvenue|St Quentin",
-              "Toussaint|Jour des Défunts|St Hubert|St Charles|Ste Sylvie|Ste Bertille|Ste Carine|St Geoffroy|St Théodore|St Léon|St Martin|St Christian|St Brice|St Sidoine|St Albert|Ste Marguerite|Ste Elisabeth|Ste Aude|St Tanguy|St Edmond|Présentation de Marie|Ste Cécile|St Clément|Ste Flora|Ste Catherine|Ste Delphine|St Séverin|St Jacques de la Marche|St Saturnin|St André",
-              "Ste Florence|Ste Viviane|St Xavier|Ste Barbara|St Gérald|St Nicolas|St Ambroise|Ste Frida|St Pierre Fourier|St Romaric|St Daniel|Ste Chantal|St Lucie|Ste Odile|Ste Ninon|Ste Alice|St Gaël|St Gatien|St Urbain|St Théophile|St Pierre Canisius|Ste Françoise-Xavière|St Armand|Ste Adèle|Noël|St Etienne|St Jean|St Gaspard|St David|St Roger|St Sylvestre"]
-
-    aujou = datetime.date.today()
-
-    try:
-        s_saints = Saints[aujou.month-1]
-        l_saint.append(s_saints.split("|")[aujou.day-1])
-       
-    except:
-        logging.error('plantage dans getSaintsList()')
-
-    
-    return (l_saint)  # retourne une liste de nom de saints
 
 ######################################################################################
 if __name__ == '__main__':
@@ -792,29 +764,5 @@ if __name__ == '__main__':
     dictToIniFile({"user":"toto"},
                   "/a/home.users/vgazeill/EclipseWorkspace/GIT/pyatt/Config/sessions.txt", 
                   )
-    dictToIniFile({"user":"totii"},
-                  "/a/home.users/vgazeill/EclipseWorkspace/GIT/pyatt/Config/sessions.txt", 
-                  section="AUTRESEC")
-#     
-#     r = CallURL("https://intranet")
-#     print str(r)
-    exit(0)
-    
-    d1 = {'zap@succes':'44','zap@total':'49','zap':'49DD', 'zap':'ZAPVAL'}
-    
-    d2 = {"results":d1}
-
-    d = {'k1':'v1','k2@roro':'v2', "k3":"K3 1", "k3":"K3 2"}
-    
-    d4 = {'k1':'v1', "k3@A3":"K3VAL", "k3@B4":'V4', "D2":d2,"k5@A5":'V5'}
-    d5 = {'d5':d4}
-
-    print xmlise(d)
-
-    exit(0)
-
-
-    copyDir("/home/users/vgazeill/tmp/Tests/CVS", "/home/users/vgazeill/tmp/")
-    
     exit(0)
 

@@ -1,10 +1,12 @@
 eclipse.preferences.version=1
-encoding//main/Constant.py=utf-8
+encoding//main/Tools/MyTools.py=utf-8
 encoding//main/admin.py=utf-8
+encoding//main/constant.py=utf-8
 encoding//main/forms.py=utf-8
 encoding//main/management/commands/controleEvenements.py=utf-8
 encoding//main/management/commands/updateDB.py=utf-8
 encoding//main/models.py=utf-8
+encoding//main/planification.py=utf-8
 encoding//main/serveRequest.py=utf-8
 encoding//main/settings.py=utf-8
 encoding//main/views.py=utf-8

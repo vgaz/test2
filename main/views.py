@@ -12,16 +12,11 @@ import forms
 from django.contrib.messages.storage.base import Message
 import datetime
 
-import Constant
 from models import Evenement, Planche, PlantBase, Prevision, TypeEvenement
 from forms import PlancheForm
+import constant, planification
 
 #################################################
-def get_or_none(model, *args, **kwargs):
-    try:
-        return model.objects.get(*args, **kwargs)
-    except model.DoesNotExist:
-        return None
 
 
 def home(request):
@@ -29,8 +24,8 @@ def home(request):
     return render(request,
                  'main/home.html',
                  {
-                  "appVersion":Constant.APP_VERSION,
-                  "appName":Constant.APP_NAME,
+                  "appVersion":constant.APP_VERSION,
+                  "appName":constant.APP_NAME,
                   "l_planches":l_planches
                   })
     
@@ -43,14 +38,14 @@ def chronoPlanche(request):
         print laPlanche
     except:
         s_msg = "Planche non trouvée... Est elle bien existante ?"
-        return render(request, 'main/erreur.html',  { "appVersion":Constant.APP_VERSION, "appName":Constant.APP_NAME, "message":s_msg})
+        return render(request, 'main/erreur.html',  { "appVersion":constant.APP_VERSION, "appName":constant.APP_NAME, "message":s_msg})
 
     delta20h = datetime.timedelta(hours=20)
     date_du_jour = datetime.datetime.now()
 
     if request.POST.get("date_debut_vue",""):
-        date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue", ""), Constant.FORMAT_DATE)
-        date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue", ""), Constant.FORMAT_DATE) + delta20h
+        date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue", ""), constant.FORMAT_DATE)
+        date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue", ""), constant.FORMAT_DATE) + delta20h
     else:
         delta = datetime.timedelta(days=60)
         date_debut_vue = date_du_jour - delta
@@ -80,11 +75,11 @@ def chronoPlanche(request):
     return render(request,
                  'main/chrono_planche.html',
                  {
-                  "appVersion":Constant.APP_VERSION,
-                  "appName":Constant.APP_NAME,
+                  "appVersion":constant.APP_VERSION,
+                  "appName":constant.APP_NAME,
                   "planche": laPlanche,
                   "l_typesEvt":l_typesEvt,
-                  "d_TitresTypeEvt": Constant.d_TitresTypeEvt,
+                  "d_TitresTypeEvt": constant.d_TitresTypeEvt,
                   "l_plants":l_plants,
                   "l_evts": l_evts,
                   "date_debut_vue": date_debut_vue,
@@ -103,8 +98,8 @@ class CreationPlanche(CreateView):
     http_method_names = ['get', 'post']
     
     def get_initials(self):
-        return {  "appVersion":Constant.APP_VERSION,
-                  "appName":Constant.APP_NAME
+        return {  "appVersion":constant.APP_VERSION,
+                  "appName":constant.APP_NAME
                 }
     
     def dispatch(self, *args, **kwargs):
@@ -126,7 +121,7 @@ def editionPlanche(request):
     planche = Planche.objects.get(num = int(request.GET.get('num_planche', 0)))
     s_date = request.POST.get("date", "")
     if s_date:
-        dateVue = datetime.datetime.strptime(s_date, Constant.FORMAT_DATE)
+        dateVue = datetime.datetime.strptime(s_date, constant.FORMAT_DATE)
     else:
         dateVue = datetime.datetime.now()
         
@@ -140,7 +135,7 @@ def editionPlanche(request):
     for et in TypeEvenement.objects.all():
         l_typesEvt.append({"id":et.id, 
                            "nom":et.nom, 
-                           "titre":Constant.d_TitresTypeEvt[et.nom]})
+                           "titre":constant.d_TitresTypeEvt[et.nom]})
     ## filtrage par date
     l_evts_debut = Evenement.objects.filter(type = TypeEvenement.objects.get(nom = "debut"), date__lte = dateVue)
     l_PlantsIds = list(l_evts_debut.values_list('plant_base_id', flat=True))
@@ -155,7 +150,7 @@ def editionPlanche(request):
     return render(request,
                  'main/edition_planche.html',
                  {
-                  "appVersion":Constant.APP_VERSION,
+                  "appVersion":constant.APP_VERSION,
                   "planche": planche,
                   "l_vars":l_vars,
                   "l_typesEvt":l_typesEvt,
@@ -171,8 +166,8 @@ def prevision_recolte(request):
     delta20h = datetime.timedelta(hours=20)
     date_du_jour = datetime.datetime.now()
     if request.POST.get("date_debut_vue",""):
-        date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue", ""), Constant.FORMAT_DATE)
-        date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue", ""), Constant.FORMAT_DATE) + delta20h
+        date_debut_vue = datetime.datetime.strptime(request.POST.get("date_debut_vue", ""), constant.FORMAT_DATE)
+        date_fin_vue = datetime.datetime.strptime(request.POST.get("date_fin_vue", ""), constant.FORMAT_DATE) + delta20h
     else:
         delta = datetime.timedelta(days=30)
         date_debut_vue = date_du_jour - delta
@@ -180,7 +175,7 @@ def prevision_recolte(request):
     date_debut_sem_vue = date_debut_vue - datetime.timedelta(days=date_debut_vue.weekday()) 
     date_fin_sem_vue = date_fin_vue + datetime.timedelta(days= 6 - date_fin_vue.weekday()) 
             
-    ## sauvegarde des prévision des récolte
+    ## sauvegarde des prévisions des récoltes
     if request.POST:
         for k, v in request.POST.items():
             ## gestion prévisions de récoltes
@@ -195,13 +190,13 @@ def prevision_recolte(request):
                 if masse == 0: ## issu d'un enregistrement ayant précédement une masse différente de zéro
                     obj.delete()
                 else:
-                    obj.quantite_kg = masse
+                    obj.qte = masse
                     obj.save()
         
         if request.POST.get("option_planif", ""):
             print "planif"
-            for prev in Prevision.objects.filter(date_semaine__gte = date_debut_sem_vue, date_semaine__lte = date_fin_sem_vue):
-                pass
+            planification.planif(date_debut_sem_vue, date_fin_sem_vue)
+                
     
     l_vars = Variete.objects.exclude(diametre_cm = 0)
     
@@ -218,12 +213,12 @@ def prevision_recolte(request):
     
     tab_previsions = "[" 
     for prev in Prevision.objects.filter(date_semaine__gte = date_debut_sem_vue, date_semaine__lte = date_fin_sem_vue):
-        tab_previsions += "['%s', %d, %d],"%(prev.date_semaine.strftime("%Y-%m-%d"), prev.variete_id, prev.quantite_kg)
+        tab_previsions += "['%s', %d, %d],"%(prev.date_semaine.strftime("%Y-%m-%d"), prev.variete_id, prev.qte)
     tab_previsions += "]" 
     return render(request,
                  'main/prevision_recolte.html',
                  {
-                  "appVersion":Constant.APP_VERSION,
+                  "appVersion":constant.APP_VERSION,
                   "date_debut_vue": date_debut_vue,
                   "date_fin_vue": date_fin_vue,
                   "l_vars":l_vars,
@@ -235,13 +230,17 @@ def prevision_recolte(request):
 #################################################
 
 def tab_varietes(request):
+    
     l_vars = Variete.objects.filter(diametre_cm__isnull=False)
+    for v in l_vars:
+        v.nomUniteProd = constant.D_UNITE_PROD_NAME[v.unite_prod]
+     
     return render(request,
                  'main/tab_varietes.html',
                  {
                   "l_vars":l_vars,
                   "l_fams":Famille.objects.all(),
-                  "appVersion":Constant.APP_VERSION
+                  "appVersion":constant.APP_VERSION,
                   })
     
 #################################################
@@ -279,7 +278,7 @@ def quizFamilles(request):
             {
              "message" : message,
              "form": form,
-             "appVersion": Constant.APP_VERSION
+             "appVersion": constant.APP_VERSION
             }
           )  
     

@@ -3,7 +3,7 @@
 from django.core.management.base import BaseCommand       
 from main.models import Famille, Variete, TypeEvenement, Planche
 import csv
-from main.Constant import d_TitresTypeEvt
+from main.constant import d_TitresTypeEvt
        
 class Command(BaseCommand):
     """updateDB command"""

@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from models import Evenement, PlantBase, Planche, TypeEvenement, Variete
 import sys
 import datetime
-import Constant
+import constant
 
 def serveRequest(request):
     """Received a request and return specific response"""
@@ -22,7 +22,7 @@ def serveRequest(request):
         try:
             l_evts = Evenement.objects.filter(plant_base_id = int(request.POST.get("id", 0)))
             s_ = ','.join(['{"id":"%d","nom":"%s","date":"%s","duree":"%d","type":"%s"}'%(   item.id, item.nom, 
-                                                                                             item.date.strftime(Constant.FORMAT_DATE), item.duree,
+                                                                                             item.date.strftime(constant.FORMAT_DATE), item.duree,
                                                                                              item.type) for item in l_evts])           
             s_json = '{"status":"true","l_evts":[%s]}'% s_
         except:
@@ -37,7 +37,7 @@ def serveRequest(request):
     if cde == "getEvt": 
         try:
             evt = Evenement.objects.get(id = int(request.POST.get("id", 0)))
-            s_ = '{"id":"%d","nom":"%s","date":"%s","type":"%s"}'%(evt.id, evt.nom, evt.date.strftime(Constant.FORMAT_DATE), evt.type)       
+            s_ = '{"id":"%d","nom":"%s","date":"%s","type":"%s"}'%(evt.id, evt.nom, evt.date.strftime(constant.FORMAT_DATE), evt.type)       
             s_json = '{"status":"true","evt":%s}'% s_
         except:
             print(__name__ + ': ' + str(sys.exc_info()[1]) )
@@ -82,7 +82,7 @@ def serveRequest(request):
                 ## svg d'un nouvel evt
                 evt = Evenement()
             evt.nom = request.POST.get("nom","")
-            evt.date = datetime.datetime.strptime(request.POST.get("date",""), Constant.FORMAT_DATE)
+            evt.date = datetime.datetime.strptime(request.POST.get("date",""), constant.FORMAT_DATE)
             evt.type = TypeEvenement.objects.get(nom=request.POST.get("type", ""))
             if evt.type == TypeEvenement.objects.get(nom="fin"):
                 evt.date = evt.date + datetime.timedelta(hours=20)  ## pour eviter les confusions de debut de jour à 0 h , on finit la journée à 20h 

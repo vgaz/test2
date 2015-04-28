@@ -2,7 +2,7 @@
 from django.db import models
 import datetime
 from utils import manager
-
+import constant
 
 class Famille(models.Model):
     """famille associée à la plante"""
@@ -13,32 +13,13 @@ class Famille(models.Model):
         
     def __unicode__(self):
         return self.nom
-    
-class Variete(models.Model):
-    """variété de plante"""
-    nom = models.CharField(max_length=100)
-    famille = models.ForeignKey(Famille, null=True, blank=True)
-    avec = models.ManyToManyField("self", related_name="avec", null=True, blank=True)
-    sans = models.ManyToManyField("self", related_name="sans", null=True, blank=True)
-    date_min_plantation = models.CharField("date (jj/mm) de début de plantation", max_length=10, default="0/0")
-    date_max_plantation = models.CharField("date (jj/mm) de fin de plantation", max_length=10, default="0/0")
-    duree_avant_recolte_j = models.IntegerField("durée en terre avant récolte (jours)", default=0)
-    prod_hebdo_moy_g = models.CommaSeparatedIntegerField("suite de production hebdomadaire moyenne (grammes)", max_length=20, default="0,0") ##attention, pour les légumes "à la pièce" ( choux, salades..), ne saisir qu'une valeur 
-    diametre_cm = models.IntegerField("diamètre (cm)", default=0)
 
-    image = models.ImageField()
-    
-    class Meta: 
-        ordering = ['nom']
-            
-    def __unicode__(self):
-        return self.nom
 
     
 class Planche(models.Model):
     """object composant la structure de base qui sera dupliquée sur toute la longueur de la planche """
     
-    num = models.PositiveIntegerField(unique=True)
+    num = models.PositiveIntegerField()
     nom = models.CharField(max_length=100, default="")
     longueur_m = models.IntegerField()
     largeur_cm = models.IntegerField()
@@ -75,13 +56,14 @@ class TypeEvenement(models.Model):
     
     def __unicode__(self):
         return self.nom
+  
     
 class Evenement(models.Model):
 
     plant_base = models.ForeignKey(PlantBase)
     date_creation = models.DateTimeField(default=datetime.datetime.now())
     date = models.DateTimeField()
-    duree = models.PositiveIntegerField("nb jours d'activité")
+    duree = models.PositiveIntegerField("nb jours d'activité", default=1)
     nom = models.CharField(max_length=100, default="")
     texte = models.TextField(default="")
     bFini = models.BooleanField(default=False)
@@ -95,15 +77,50 @@ class Evenement(models.Model):
 
 
 class Prevision(models.Model):
-    """Prévision des récoltes"""
+    """Prévision hebdomadaire des récoltes"""
     variete = models.ForeignKey(Variete)
     date_semaine = models.DateTimeField("date de debut de semaine")
-    quantite_kg = models.PositiveIntegerField("quantité en kg", default=0)
+    qte = models.PositiveIntegerField("quantité en kg ou pièces", default=0)
     objects = manager.BaseManager()
     
     class Meta: 
         ordering = ["date_semaine"]
             
     def __unicode__(self):
-        return "sem du %s : %s : %d kg"%(self.date_semaine, self.variete.nom, self.quantite_kg)
+        return "sem du %s : %s : %d kg"%(self.date_semaine, self.variete.nom, self.qte)
     
+
+class Production(models.Model):
+    """Prévision hebdomadaire des productions"""
+    variete = models.ForeignKey(Variete)
+    date_semaine = models.DateTimeField("date de debut de semaine")
+    qte = models.PositiveIntegerField("quantité produite en kg ou pièces", default=0)
+    qte_bloquee = models.PositiveIntegerField("quantité réservée en kg ou pièces", default=0)
+    objects = manager.BaseManager()
+    
+    class Meta: 
+        ordering = ["date_semaine"]
+            
+    def __unicode__(self):
+        return "sem du %s : %s : %d kg (%d réservée)"%(self.date_semaine, self.variete.nom, self.qte, self.qte_bloquee)
+
+    
+class Variete(models.Model):
+    """variété de plante"""
+    nom = models.CharField(max_length=100)
+    famille = models.ForeignKey(Famille, null=True, blank=True)
+    avec = models.ManyToManyField("self", related_name="avec", null=True, blank=True)
+    sans = models.ManyToManyField("self", related_name="sans", null=True, blank=True)
+    date_min_plantation = models.CharField("date (jj/mm) de début de plantation", max_length=10, default="0/0")
+    date_max_plantation = models.CharField("date (jj/mm) de fin de plantation", max_length=10, default="0/0")
+    duree_avant_recolte_j = models.IntegerField("durée en terre avant récolte (jours)", default=0)
+    prod_hebdo_moy_g = models.CommaSeparatedIntegerField("suite de production hebdomadaire moyenne (grammes)", max_length=20, default="0,0") ##attention, pour les légumes "à la pièce" ( choux, salades..), ne saisir qu'une valeur 
+    diametre_cm = models.IntegerField("diamètre (cm)", default=0)
+    unite_prod = models.PositiveIntegerField(default=constant.UNITE_PROD_KG)
+    image = models.ImageField()
+    
+    class Meta: 
+        ordering = ['nom']
+            
+    def __unicode__(self):
+        return self.nom        

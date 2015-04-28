@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse_lazy
 
 admin.autodiscover()
 from views import CreationPlanche
-import Constant, settings
+import constant, settings
 
 urlpatterns = patterns('',
 
@@ -20,7 +20,7 @@ urlpatterns = patterns('',
 
     url(r'^creation_planche/', 
         CreationPlanche.as_view() ,  
-        {"appName":Constant.APP_NAME, "appVersion":Constant.APP_VERSION}, 
+        {"appName":constant.APP_NAME, "appVersion":constant.APP_VERSION}, 
         name='creation_planche'),
     
     url(r'^admin/', include(admin.site.urls)),
