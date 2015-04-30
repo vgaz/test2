@@ -313,7 +313,10 @@ function deplace()
 
 {% endblock %}
 
-{% block title %}Définition de la matrice de la planche {{planche.num}} ({{planche.largeur_cm}}cm x {{planche.longueur_m}}m) {% endblock %}
+{% block title %}
+Définition de la matrice de la planche {{planche.num}} ({{planche.largeur_cm}}cm x {{planche.longueur_m}}m) 
+<br />{{planche.nom}}
+{% endblock %}
 
 {% block content %}
 <form action="" method="POST" accept-charset="utf-8">
